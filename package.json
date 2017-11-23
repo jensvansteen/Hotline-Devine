@@ -11,7 +11,7 @@
     "serve": "http-server ./dist -p 8080"
   },
   "keywords": [],
-  "author": "Jens van Steen <jensvansteen@gmail.com> & Nicolas Nuytten <nicolas.nuytten@student.howest.be> ",
+  "author": "Jens van Steen <jensvansteen@gmail.com> - Nicolas Nuytten <nicolas.nuytten@student.howest.be> ",
   "license": "MIT",
   "devDependencies": {
     "babel-core": "^6.17.0",
