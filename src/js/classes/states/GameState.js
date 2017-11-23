@@ -24,7 +24,6 @@ export default class GameState extends Phaser.State {
 
     button.onInputOver.add(this.over, this);
     button.onInputOut.add(this.out, this);
-    button.inInputOut.add(this.up, this)
 
   }
   update() {}
@@ -33,16 +32,15 @@ export default class GameState extends Phaser.State {
   
   
   out() {
-    console.log('die out dingens');
+    // cursor verlaat button
+    button.scale.setTo(1, 1);
   }
   
   over() {
-    console.log('button over');
+    //cursor hover over button
+    button.scale.setTo(1.1, 1.1);
   }
   
-  up() {
-    console.log('button over');
-  }
 
   startTheGame() {
     console.log('Start game');
