@@ -3,15 +3,14 @@ let button;
 export default class GameState extends Phaser.State {
   init() {
     console.log(`init`);
-    this.cursors = this.input.keyboard.createCursorKeys();
-
-
-
   }
+
   preload() {
     console.log(`preload`);
     this.load.image('startScreen', 'assets/start-screen.jpg');
     this.load.image('button', 'assets/buttons/start-button.png', 433, 122);
+    this.load.image('map', 'assets/map.png', 2732, 1536);
+    this.load.image('player', 'assets/player.png', 75, 75);
 
 
   }
@@ -24,8 +23,6 @@ export default class GameState extends Phaser.State {
 
     button.onInputOver.add(this.over, this);
     button.onInputOut.add(this.out, this);
-    button.inInputOut.add(this.up, this);
-
   }
   update() {}
 
@@ -33,19 +30,19 @@ export default class GameState extends Phaser.State {
 
 
   out() {
-    console.log('die out dingens');
+    // cursor verlaat button
+    button.scale.setTo(1, 1);
   }
 
   over() {
-    console.log('button over');
-  }
-
-  up() {
-    console.log('button over');
+    //cursor hover over button
+    button.scale.setTo(1.1, 1.1);
   }
 
   startTheGame() {
     console.log('Start game');
     button.inputEnabled = false;
+    this.background = this.add.tileSprite(0, 0, this.game.width, this.game.height, 'map');
+    this.player = this.add.sprite(this.game.width / 2, this.game.height / 2, 'dude');
   }
 }
