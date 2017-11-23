@@ -24,7 +24,7 @@ export default class GameState extends Phaser.State {
 
     button.onInputOver.add(this.over, this);
     button.onInputOut.add(this.out, this);
-    button.inInputOut.add(this.up, this)
+    button.inInputOut.add(this.up, this);
 
   }
   update() {}
