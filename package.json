@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "development": "webpack-dev-server --open",
-    "production": "npm run clean && webpack && npm run copy",
+    "dev": "webpack-dev-server --open",
+    "pro": "npm run clean && webpack && npm run copy",
     "copy": "copyfiles -u 1 ./src/index.html ./src/js/phaser.min.js ./src/assets/**/*.* ./dist",
     "clean": "rimraf dist",
     "serve": "http-server ./dist -p 8080"
