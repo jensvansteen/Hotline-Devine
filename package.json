@@ -1,0 +1,25 @@
+{
+  "name": "demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "development": "webpack-dev-server",
+    "production": "npm run clean && webpack && npm run copy",
+    "copy": "copyfiles -u 1 ./src/index.html ./src/js/phaser.min.js ./src/assets/**/*.* ./dist",
+    "clean": "rimraf dist",
+    "serve": "http-server ./dist -p 8080"
+  },
+  "keywords": [],
+  "author": "Wouter Verweirder <wouter.verweirder@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-core": "^6.17.0",
+    "babel-loader": "^6.2.5",
+    "babel-preset-es2015": "^6.16.0",
+    "copyfiles": "^1.0.0",
+    "http-server": "^0.9.0",
+    "webpack": "beta",
+    "webpack-dev-server": "beta"
+  }
+}
