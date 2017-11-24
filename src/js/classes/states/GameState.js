@@ -44,18 +44,18 @@ export default class GameState extends Phaser.State {
   player.body.velocity.y = 0;
   player.body.setSize(50, 20, 7, 20);
 
-  if (this.cursors.left.isDown) {
+  if (this.cursors.left.isDown && !this.cursors.up.isDown && !this.cursors.right.isDown && !this.cursors.down.isDown) {
     player.walkLeft();
     player.body.velocity.x = -player.data.speed;
-  } else if (this.cursors.right.isDown) {
+  } else if (this.cursors.right.isDown && !this.cursors.up.isDown && !this.cursors.left.isDown && !this.cursors.down.isDown) {
     player.walkRight();
     player.body.velocity.x = player.data.speed;
   }
 
-  if (this.cursors.up.isDown) {
+  if (this.cursors.up.isDown && !this.cursors.left.isDown && !this.cursors.right.isDown && !this.cursors.down.isDown) {
     player.walkUp();
     player.body.velocity.y = -player.data.speed;
-  } else if (this.cursors.down.isDown) {
+  } else if (this.cursors.down.isDown && !this.cursors.left.isDown && !this.cursors.right.isDown && !this.cursors.up.isDown) {
     player.walkDown();
     player.body.velocity.y = player.data.speed;
   }
