@@ -11,7 +11,7 @@ export default class GameState extends Phaser.State {
     console.log(`preload`);
     this.load.image('map', 'assets/map.png', 2732, 1536);
     // this.load.image('player', 'assets/player.png', 75, 75);
-    this.load.spritesheet('player', 'assets/player-walk.png', 43, 35,5);
+    this.load.spritesheet('player', 'assets/player-tileset.png', 36, 50);
 
 
   }
@@ -22,9 +22,6 @@ export default class GameState extends Phaser.State {
     player = new Player(this.game, this.game.width / 2, this.game.height / 2);
     this.add.existing(player);
     this.cursors = this.input.keyboard.createCursorKeys();
-    // player.animation();
-    player.animations.add('walk');
-    player.animations.play('walk', 10, true);
 
   }
 
@@ -34,7 +31,6 @@ export default class GameState extends Phaser.State {
 
   update() {
   this.processPlayerInput();
-
 
   }
 
