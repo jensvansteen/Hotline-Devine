@@ -18,15 +18,11 @@ export default class Player extends Phaser.Sprite {
   stand(){
     this.animations.play('stand');
   }
-<<<<<<< HEAD
-  
-=======
   axe(){
     const axe = this.animations.play('axe', 10, false);
 
   }
 
->>>>>>> 1409ad4c5a387d456af41d3725cd02d783691f77
   walk(){
     const animation = this.animations.play('walk', 10, false);
   }
@@ -44,10 +40,6 @@ export default class Player extends Phaser.Sprite {
   //   const animation = this.animations.play('walkDown', 10, false);
   // }
 
-<<<<<<< HEAD
-
-
-=======
   walkRight(){
     const animation = this.animations.play('walkRight', 10, false);
   }
@@ -64,5 +56,4 @@ export default class Player extends Phaser.Sprite {
   walkDown(){
     const animation = this.animations.play('walkDown', 10, false);
   }
->>>>>>> 1409ad4c5a387d456af41d3725cd02d783691f77
 }
