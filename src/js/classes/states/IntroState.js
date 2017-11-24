@@ -21,7 +21,6 @@ export default class GameState extends Phaser.State {
 
 
     const startButton = new Button(this.game, this.world.centerX, 697, this.startTheGame, this);
-    startButton.anchor.setTo(0.5, 0.5);
     startButton.onInputOver.add(this.over, this);
     startButton.onInputOut.add(this.out, this);
     this.add.existing(startButton);
