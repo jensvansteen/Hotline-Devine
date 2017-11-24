@@ -1,4 +1,5 @@
 let button;
+let player;
 
 export default class GameState extends Phaser.State {
   init() {
@@ -10,11 +11,14 @@ export default class GameState extends Phaser.State {
     this.load.image('startScreen', 'assets/start-screen.jpg');
     this.load.image('button', 'assets/buttons/start-button.png', 433, 122);
     this.load.image('map', 'assets/map.png', 2732, 1536);
-    this.load.image('player', 'assets/player.png', 75, 75);
+    // this.load.image('player', 'assets/player.png', 75, 75);
+    this.load.spritesheet('player', 'assets/player-tileset.png', 36, 50);
 
 
   }
   create() {
+
+    this.world.setBounds(0, 0, 1366, 768);
 
     this.background = this.add.tileSprite(0, 0, this.game.width, this.game.height, 'startScreen');
 
@@ -23,6 +27,8 @@ export default class GameState extends Phaser.State {
 
     button.onInputOver.add(this.over, this);
     button.onInputOut.add(this.out, this);
+
+
   }
   update() {}
 
@@ -43,6 +49,9 @@ export default class GameState extends Phaser.State {
     console.log('Start game');
     button.inputEnabled = false;
     this.background = this.add.tileSprite(0, 0, this.game.width, this.game.height, 'map');
-    this.player = this.add.sprite(this.game.width / 2, this.game.height / 2, 'player');
+    // player = this.add.sprite(this.game.width / 2, this.game.height / 2, 'player', 7);
+    player = this.add.sprite(this.game.width / 2, this.game.height / 2, 'player');
+    player.animations.add('walk');
+    player.animations.play('walk', 10, true);
   }
 }
