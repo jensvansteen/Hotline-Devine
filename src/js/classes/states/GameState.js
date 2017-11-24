@@ -22,6 +22,9 @@ export default class GameState extends Phaser.State {
     player = new Player(this.game, this.game.width / 2, this.game.height / 2);
     this.add.existing(player);
     this.cursors = this.input.keyboard.createCursorKeys();
+    // player.animation();
+
+    // player.animations.play('walk', 10, true);
 
   }
 
@@ -41,16 +44,23 @@ export default class GameState extends Phaser.State {
   player.body.setSize(50, 20, 7, 20);
 
   if (this.cursors.left.isDown) {
+    player.walk();
     player.body.velocity.x = -player.data.speed;
   } else if (this.cursors.right.isDown) {
+    player.walk();
     player.body.velocity.x = player.data.speed;
   }
 
   if (this.cursors.up.isDown) {
+    player.walk();
     player.body.velocity.y = -player.data.speed;
   } else if (this.cursors.down.isDown) {
+    player.walk();
     player.body.velocity.y = player.data.speed;
   }
+  // else {
+  //   player.stand();
+  // }
 
 
 }
