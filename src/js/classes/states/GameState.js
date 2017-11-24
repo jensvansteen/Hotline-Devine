@@ -11,7 +11,8 @@ export default class GameState extends Phaser.State {
     console.log(`preload`);
     this.load.image('map', 'assets/map.png', 2732, 1536);
     // this.load.image('player', 'assets/player.png', 75, 75);
-    this.load.spritesheet('player', 'assets/player-tileset.png', 36, 50);
+    // this.load.spritesheet('player', 'assets/player-tileset.png', 36, 50);
+    this.load.atlasJSONHash('player', 'assets/json/components.png', 'assets/json/components.json');
 
 
   }
@@ -44,18 +45,18 @@ export default class GameState extends Phaser.State {
   player.body.setSize(50, 20, 7, 20);
 
   if (this.cursors.left.isDown) {
-    player.walk();
+    player.walkLeft();
     player.body.velocity.x = -player.data.speed;
   } else if (this.cursors.right.isDown) {
-    player.walk();
+    player.walkRight();
     player.body.velocity.x = player.data.speed;
   }
 
   if (this.cursors.up.isDown) {
-    player.walk();
+    player.walkUp();
     player.body.velocity.y = -player.data.speed;
   } else if (this.cursors.down.isDown) {
-    player.walk();
+    player.walkDown();
     player.body.velocity.y = player.data.speed;
   }
   // else {
