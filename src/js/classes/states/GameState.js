@@ -43,6 +43,6 @@ export default class GameState extends Phaser.State {
     console.log('Start game');
     button.inputEnabled = false;
     this.background = this.add.tileSprite(0, 0, this.game.width, this.game.height, 'map');
-    this.player = this.add.sprite(this.game.width / 2, this.game.height / 2, 'dude');
+    this.player = this.add.sprite(this.game.width / 2, this.game.height / 2, 'player');
   }
 }
