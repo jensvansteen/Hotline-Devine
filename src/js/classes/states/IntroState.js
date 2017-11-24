@@ -14,7 +14,7 @@ export default class GameState extends Phaser.State {
 
   create() {
     let music = this.add.audio('soundtrack', 1,true);
-    music.play();
+    // music.play();
     music.volume = 0.1;
     this.background = this.add.tileSprite(0, 0, this.game.width, this.game.height, 'startScreen');
     this.cursors = this.input.keyboard.createCursorKeys();

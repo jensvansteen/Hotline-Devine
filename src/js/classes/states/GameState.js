@@ -34,7 +34,7 @@ export default class GameState extends Phaser.State {
 }
 
   update() {
-  
+
   this.processPlayerInput();
 
   }
@@ -45,8 +45,8 @@ export default class GameState extends Phaser.State {
   player.body.velocity.x = 0;
   player.body.velocity.y = 0;
   player.body.setSize(50, 20, 7, 20);
-  
-  if (this.cursors.up.isDown) {  
+
+  if (this.cursors.up.isDown) {
     // this.physics.arcade.moveToPointer(player, player.data.speed);
     // player.walk();
     if(distanceToPlayer > 10){
@@ -54,9 +54,11 @@ export default class GameState extends Phaser.State {
     this.physics.arcade.moveToPointer(player, player.data.speed);
     player.walk();
     // player.body.velocity.x = -player.data.speed;
+    }
   }
+  if (this.cursors.left.isDown) {
+    player.axe();
   }
-
   // if (this.cursors.left.isDown && !this.cursors.up.isDown && !this.cursors.right.isDown && !this.cursors.down.isDown) {
   //   player.walkLeft();
   //   player.body.velocity.x = -player.data.speed;
@@ -64,7 +66,7 @@ export default class GameState extends Phaser.State {
   //   player.walkRight();
   //   player.body.velocity.x = player.data.speed;
   // }
-  // 
+  //
   // if (this.cursors.up.isDown && !this.cursors.left.isDown && !this.cursors.right.isDown && !this.cursors.down.isDown) {
   //   player.walkUp();
   //   player.body.velocity.y = -player.data.speed;
