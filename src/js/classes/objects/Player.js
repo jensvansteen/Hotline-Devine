@@ -1,3 +1,4 @@
+let attack = false;
 export default class Player extends Phaser.Sprite {
   constructor(game, x, y, frames) {
     super(game, x, y, 'player');
@@ -19,12 +20,20 @@ export default class Player extends Phaser.Sprite {
     this.animations.play('stand');
   }
   axe(){
+    attack = true;
     const axe = this.animations.play('axe', 10, false);
+    axe.onComplete.add(() => {
+      this.stand();
+      attack = false;
+    });
 
   }
 
   walk(){
-    const animation = this.animations.play('walk', 10, false);
+    if(!attack){
+      const animation = this.animations.play('walk', 10, false);
+    }
+
   }
 
   // walkLeft(){
