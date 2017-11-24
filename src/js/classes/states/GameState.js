@@ -1,5 +1,5 @@
-let button;
-let player;
+
+const PLAYER_SPEED = 300;
 
 export default class GameState extends Phaser.State {
   init() {
@@ -8,8 +8,6 @@ export default class GameState extends Phaser.State {
 
   preload() {
     console.log(`preload`);
-    this.load.image('startScreen', 'assets/start-screen.jpg');
-    this.load.image('button', 'assets/buttons/start-button.png', 433, 122);
     this.load.image('map', 'assets/map.png', 2732, 1536);
     // this.load.image('player', 'assets/player.png', 75, 75);
     this.load.spritesheet('player', 'assets/player-tileset.png', 36, 50);
@@ -18,40 +16,68 @@ export default class GameState extends Phaser.State {
   }
   create() {
 
-    this.world.setBounds(0, 0, 1366, 768);
-
-    this.background = this.add.tileSprite(0, 0, this.game.width, this.game.height, 'startScreen');
-
-    button = this.add.button(this.world.centerX, 697, 'button',this.startTheGame, this);
-    button.anchor.setTo(0.5, 0.5);
-
-    button.onInputOver.add(this.over, this);
-    button.onInputOut.add(this.out, this);
-
+    this.background = this.add.tileSprite(0, 0, this.game.width, this.game.height, 'map');
+    this.cursors = this.input.keyboard.createCursorKeys();
 
   }
-  update() {}
+
+  setupPlayer() {
+  this.player = this.add.sprite(this.game.width / 2, this.game.height / 2, 'player');
+  this.player.anchor.setTo(0.5, 0.5);
+  this.player.data.speed = PLAYER_SPEED;
+  this.physics.enable(this.player, Phaser.Physics.ARCADE);
+  this.player.body.collideWorldBounds = true;
+
+}
+  update() {
+  this.processPlayerInput();
+
+  }
+
+  processPlayerInput() {
+  this.player.body.velocity.x = 0;
+  this.player.body.velocity.y = 0;
+  this.player.body.setSize(50, 20, 7, 20);
+
+  if (this.cursors.left.isDown) {
+    this.player.body.velocity.x = -this.player.data.speed;
+  } else if (this.cursors.right.isDown) {
+    this.player.body.velocity.x = this.player.data.speed;
+  }
+
+  if (this.cursors.up.isDown) {
+    this.player.body.velocity.y = -this.player.data.speed;
+  } else if (this.cursors.down.isDown) {
+    this.player.body.velocity.y = this.player.data.speed;
+  }
+
+  // if (this.input.activePointer.isDown && this.physics.arcade.distanceToPointer(this.player) > 15) {
+  //   this.physics.arcade.moveToPointer(this.player, this.player.data.speed);
+  // }
+
+  // if (this.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) ||
+  //     this.input.activePointer.isDown) {
+  //   this.fire();
+  // }
+}
 
   render() {}
 
 
   out() {
     // cursor verlaat button
-    button.scale.setTo(1, 1);
+    startButton.scale.setTo(1, 1);
   }
 
   over() {
     //cursor hover over button
-    button.scale.setTo(1.1, 1.1);
+    startButton.scale.setTo(1.1, 1.1);
   }
 
   startTheGame() {
     console.log('Start game');
-    button.inputEnabled = false;
-    this.background = this.add.tileSprite(0, 0, this.game.width, this.game.height, 'map');
-    // player = this.add.sprite(this.game.width / 2, this.game.height / 2, 'player', 7);
-    player = this.add.sprite(this.game.width / 2, this.game.height / 2, 'player');
-    player.animations.add('walk');
-    player.animations.play('walk', 10, true);
+    startButton.inputEnabled = false;
+
+      this.setupPlayer();
   }
 }
