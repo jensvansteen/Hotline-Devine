@@ -4,18 +4,21 @@ export default class GameState extends Phaser.State {
   init() {
     console.log(`init`);
   }
-  
+
   preload() {
     console.log(`preload`);
     this.load.image('startScreen', 'assets/start-screen.jpg');
     this.load.image('button', 'assets/buttons/start-button.png', 433, 122);
+    this.load.audio('soundtrack', 'assets/sounds/soundtrack.mp3');
   }
-  
-  create() {
 
+  create() {
+    let music = this.add.audio('soundtrack', 1,true);
+    music.play();
+    music.volume = 0.1;
     this.background = this.add.tileSprite(0, 0, this.game.width, this.game.height, 'startScreen');
     this.cursors = this.input.keyboard.createCursorKeys();
-  
+
 
     const startButton = new Button(this.game, this.world.centerX, 697, this.startTheGame, this);
     startButton.anchor.setTo(0.5, 0.5);
@@ -23,11 +26,11 @@ export default class GameState extends Phaser.State {
     startButton.onInputOut.add(this.out, this);
     this.add.existing(startButton);
   }
-  
-  update() {  
+
+  update() {
   }
-  
-  
+
+
   render() {}
 
 

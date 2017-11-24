@@ -12,26 +12,25 @@ export default class Player extends Phaser.Sprite {
     this.animations.add('walkUp', ['13.png','14.png','15.png','16.png','17.png','18.png'], 10, true, true);
     this.animations.add('walkDown', ['19.png','20.png','21.png','22.png','23.png','24.png'], 10, true, true);
   }
-    
+
   stand(){
     this.animations.play('stand');
   }
-  
+
   walkRight(){
     const animation = this.animations.play('walkRight', 10, false);
   }
-  
+
   walkLeft(){
     const animation = this.animations.play('walkLeft', 10, false);
   }
-  
-  
+
+
   walkUp(){
     const animation = this.animations.play('walkUp', 10, false);
   }
-  
+
   walkDown(){
     const animation = this.animations.play('walkDown', 10, false);
   }
-
 }
