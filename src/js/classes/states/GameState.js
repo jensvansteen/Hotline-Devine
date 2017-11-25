@@ -94,6 +94,7 @@ export default class GameState extends Phaser.State {
   }
   if (this.cursors.left.isDown) {
     player.axe();
+
   }
   // if (this.cursors.left.isDown && !this.cursors.up.isDown && !this.cursors.right.isDown && !this.cursors.down.isDown) {
   //   player.walkLeft();
