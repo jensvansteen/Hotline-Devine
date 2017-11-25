@@ -4,8 +4,7 @@ export default class Player extends Phaser.Sprite {
     this.anchor.setTo(0.5, 0.5);
     this.data.speed = 200;
     this.game.physics.enable(this, Phaser.Physics.ARCADE);
-    this.game.physics.arcade.enableBody(this);
-    this.rotation = game.physics.arcade.angleToPointer(this);
+    // this.game.physics.arcade.enableBody(this);
     this.body.collideWorldBounds = true;
     this.animations.add('stand', ['1.png'], 10, true, true);
     this.animations.add('walk', ['1.png','2.png','3.png','4.png','5.png','6.png'], 10, true, true);
@@ -27,33 +26,5 @@ export default class Player extends Phaser.Sprite {
     const animation = this.animations.play('walk', 10, false);
   }
 
-  // walkLeft(){
-  //   const animation = this.animations.play('walkLeft', 10, false);
-  // }
-  //
-  //
-  // walkUp(){
-  //   const animation = this.animations.play('walkUp', 10, false);
-  // }
-  //
-  // walkDown(){
-  //   const animation = this.animations.play('walkDown', 10, false);
-  // }
 
-  walkRight(){
-    const animation = this.animations.play('walkRight', 10, false);
-  }
-
-  walkLeft(){
-    const animation = this.animations.play('walkLeft', 10, false);
-  }
-
-
-  walkUp(){
-    const animation = this.animations.play('walkUp', 10, false);
-  }
-
-  walkDown(){
-    const animation = this.animations.play('walkDown', 10, false);
-  }
 }
