@@ -16,7 +16,6 @@ export default class GameState extends Phaser.State {
     // this.load.image('player', 'assets/player.png', 75, 75);
     // this.load.spritesheet('player', 'assets/player-tileset.png', 36, 50);
     this.load.image('wall', 'assets/wall-01.png');
-    this.load.image('blackplayer', 'assets/blackplayer-01.png');
     this.load.atlasJSONHash('player', 'assets/json/components.png', 'assets/json/components.json');
 
 
