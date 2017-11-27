@@ -24,7 +24,7 @@ export default class GameState extends Phaser.State {
     this.setupBackground();
     // this.setupPlayer();
     player = new Player(this.game, this.game.width / 2, this.game.height / 2);
-    player.scale.setTo(1.5,1.5);
+    player.scale.setTo(2,2);
     this.camera.follow(player);
     this.add.existing(player);
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -89,7 +89,10 @@ export default class GameState extends Phaser.State {
   }
 
   if (this.cursors.left.isDown) {
-    player.axe();
+    player.shoot('axe');
+  }
+  if (this.cursors.right.isDown) {
+    player.shoot('gun');
   }
 
   // if (this.cursors.left.isDown && !this.cursors.up.isDown && !this.cursors.right.isDown && !this.cursors.down.isDown) {
