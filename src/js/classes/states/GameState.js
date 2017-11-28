@@ -3,7 +3,8 @@ import Player from '../objects/Player';
 import Wall from '../objects/Wall';
 let player;
 let wall;
-const wallPositions = [{name: "upper right wall", x: 800, y:600, width:220, height:22},{name: "upper left wall", x: 400, y:400, width:220, height:22}, {name: "upper down wall", x: 200, y:300, width:220, height:22}]
+let weapon = 'axe';
+const wallPositions = [{name: "upper right wall", x: 800, y:600, width:660, height:130},{name: "upper left wall", x: 400, y:400, width:220, height:22}, {name: "upper down wall", x: 200, y:300, width:220, height:22}]
 
 export default class GameState extends Phaser.State {
   init() {
@@ -16,6 +17,8 @@ export default class GameState extends Phaser.State {
     // this.load.image('player', 'assets/player.png', 75, 75);
     // this.load.spritesheet('player', 'assets/player-tileset.png', 36, 50);
     this.load.image('wall', 'assets/wall-01.png');
+    this.load.image('table-01', 'assets/objects/table-01.png');
+    this.load.image('table-02', 'assets/objects/table-02.png');
     this.load.atlasJSONHash('player', 'assets/json/components.png', 'assets/json/components.json');
   }
 
@@ -88,7 +91,7 @@ export default class GameState extends Phaser.State {
     }
   }
 
-  if (this.cursors.left.isDown) {
+  if (this.cursors.right.isDown) {
     player.shoot('axe');
   }
   if (this.cursors.right.isDown) {
