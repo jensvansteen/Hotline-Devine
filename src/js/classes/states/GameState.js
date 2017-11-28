@@ -1,8 +1,11 @@
 
 import Player from '../objects/Player';
 import Wall from '../objects/Wall';
+import MapObject from '../objects/MapObject';
 let player;
-let wall;
+let walls;
+let mapObjects;
+
 const wallPositions = [{name: "boven muur kotje", x: 595, y:0, width:394, height:18}, {name: "rechter muur kotje", x:971, y:0, width:18, height:209}];
 
 export default class GameState extends Phaser.State {
@@ -13,17 +16,25 @@ export default class GameState extends Phaser.State {
   preload() {
     console.log(`preload`);
     this.load.image('map', 'assets/map.png', 2351, 2134);
-    // this.load.image('player', 'assets/player.png', 75, 75);
-    // this.load.spritesheet('player', 'assets/player-tileset.png', 36, 50);
+
     this.load.image('wall', 'assets/wall-01.png');
+    this.load.json('objects', 'assets/json/map.json')
     this.load.image('table-01', 'assets/objects/table-01.png');
     this.load.image('table-02', 'assets/objects/table-02.png');
+    this.load.image('macbook', 'assets/objects/macbook.png');
     this.load.atlasJSONHash('player', 'assets/json/components.png', 'assets/json/components.json');
   }
 
   create() {
     this.world.setBounds(0, 0, 2351, 2134);
+    // fetch(`./assets/json/map.json`).then(r => r.json()).then(this.parse,this);
+  
+    
+
     this.setupBackground();
+    
+
+
     // this.setupPlayer();
     player = new Player(this.game, this.game.width / 2, this.game.height / 2);
     player.scale.setTo(2,2);
@@ -31,30 +42,36 @@ export default class GameState extends Phaser.State {
     this.add.existing(player);
     this.cursors = this.input.keyboard.createCursorKeys();
     this.wallGroup = this.add.group();
-
-    // this.walls = this.add.group();
-    // this.walls.enableBody = true;
-
-    // this.walls.create(this.game.width / 2 + 100, this.game.height / 2 + 100, 'wall');
-
-  for(let id = 0; id < wallPositions.length; id ++) {
-  let pos = wallPositions[id];
-  wall = new Wall(this.game, pos.x, pos.y, pos.width, pos.height);
-  this.wallGroup.add(wall);
-  };
-
-  // wall = new Wall(this.game, 400, 400, 220, 22);
-  //   this.add.existing(wall);
-
-    // this.miniWall = this.add.tileSprite(400, 400, 220, 22, 'wall');
-    // this.physics.enable(this.miniWall, Phaser.Physics.ARCADE);
-    //   // this.miniWall.enableBody = true;
-    //   // this.physics.arcade.enableBody(this.miniWall);
-    //   this.miniWall.body.immovable = true;
-      // this.walls.setAll('body.immovable', true);
-      // this.walls.setAll('body.immovable', true);
+    this.mapObjectGroup = this.add.group();
+    let tempObjects = this.game.cache.getJSON('objects');
+    walls = Array.from(tempObjects.walls);
+    mapObjects = Array.from(tempObjects.objects);
+    this.setupWalls();
+    this.setupMapObjects();
+    
 
   }
+    
+  
+
+setupWalls() {
+  walls.forEach(wall => {
+        wall = new Wall(this.game, wall.x, wall.y, wall.width, wall.height);
+        this.wallGroup.add(wall);
+      }
+      )
+}
+
+
+setupMapObjects() {
+  mapObjects.forEach(object => {
+    object = new MapObject(this.game, object.x, object.y, object.picture);
+    console.log(object);
+    this.mapObjectGroup.add(object);
+  }
+)
+}
+
 
   setupBackground() {
     this.background = this.add.tileSprite(0, 0, 2351, 2134, 'map');
@@ -63,6 +80,7 @@ export default class GameState extends Phaser.State {
 
   update() {
   this.physics.arcade.collide(player, this.wallGroup, this.collisionHandler, null, this);
+  this.physics.arcade.collide(player, this.mapObjectGroup, this.collisionHandler, null, this);
   this.processPlayerInput();
   }
 
@@ -75,10 +93,6 @@ export default class GameState extends Phaser.State {
   player.rotation = this.physics.arcade.angleToPointer(player);
   player.body.velocity.x = 0;
   player.body.velocity.y = 0;
-  // player.body.setSize(50, 20, 7, 20);
-  // this.blackPlayer.body.velocity.x = 0;
-  // this.blackPlayer.body.velocity.y = 0;
-  // this.blackPlayer.body.setSize(50, 20, 7, 20);
 
   if (this.cursors.up.isDown) {
     // this.physics.arcade.moveToPointer(this.blackPlayer, player.data.speed);

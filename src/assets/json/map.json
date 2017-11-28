@@ -1,0 +1,235 @@
+{
+"walls": [
+{
+  "name": "boven muur bovenste kotje",
+  "x" : 595,
+  "y": 0,
+  "width": 410,
+  "height": 18
+},
+{
+  "name": "linker muur bovenste kotje",
+  "x" : 595,
+  "y": 0,
+  "width": 18,
+  "height": 215
+},
+{
+  "name": "rechter muur bovenste kotje",
+  "x" : 988,
+  "y": 0,
+  "width": 18,
+  "height": 402
+},
+{
+  "name": "linker boven muur bosuwwee",
+  "x" : 0.5,
+  "y": 212,
+  "width": 755,
+  "height": 18
+},
+{
+  "name": "rechter boven muur bosuwwee/ liker boven muur ateleir 1",
+  "x" : 816,
+  "y": 212,
+  "width": 708,
+  "height": 18
+},
+{
+  "name": "rechter boven muur bosuwwee/ liker boven muur ateleir 1",
+  "x" : 816,
+  "y": 212,
+  "width": 708,
+  "height": 18
+},
+{
+  "name": "lange linker muur",
+  "x" : 0,
+  "y": 215,
+  "width": 18,
+  "height": 1918
+},
+{
+  "name": "linker muur bossuwee",
+  "x" : 6.5,
+  "y": 676,
+  "width": 677,
+  "height": 18
+},
+{
+  "name": "rechter onderste muur bossuwee",
+  "x" : 804,
+  "y": 676,
+  "width": 398,
+  "height": 18
+},
+{
+  "name": "onderste rechter muur bossuwee",
+  "x" : 988,
+  "y": 522,
+  "width": 18,
+  "height": 171
+},
+{
+  "name": "midden onderste muur atelier 1",
+  "x" : 1323,
+  "y": 676,
+  "width": 712,
+  "height": 18
+},
+{
+  "name": "rechter onderste muur atelier 1",
+  "x" : 2155,
+  "y": 676,
+  "width": 183,
+  "height": 18
+},
+{
+  "name": "bovenste muur atelier 1",
+  "x" : 1523,
+  "y": 0,
+  "width": 827,
+  "height": 18
+},
+{
+  "name": "hoekje atelier 1",
+  "x" : 1505,
+  "y": 0,
+  "width": 18,
+  "height": 228
+},
+{
+  "name": "lange rechter muur",
+  "x" : 2332,
+  "y": 0,
+  "width": 18,
+  "height": 2132
+},
+{
+  "name": "muur rechts van trap",
+  "x" : 1834,
+  "y": 775,
+  "width": 18,
+  "height": 640
+},
+{
+  "name": "muur rechts van trap",
+  "x" : 1834,
+  "y": 775,
+  "width": 18,
+  "height": 640
+},
+{
+  "name": "onder linker muur lift kamertje",
+  "x" : 1852,
+  "y": 1043,
+  "width": 183,
+  "height": 18
+},
+{
+  "name": "onder rechter muur lift kamertje",
+  "x" : 2154,
+  "y": 1043,
+  "width": 183,
+  "height": 18
+},
+{
+  "name": "onder linker muur tussen kamer/ boven rechter atelier 2",
+  "x" : 906.5,
+  "y": 1407,
+  "width": 1128,
+  "height": 18
+},
+{
+  "name": "onder rechter muur tussen kamer",
+  "x" : 2155,
+  "y": 1407,
+  "width": 183,
+  "height": 18
+},
+{
+  "name": "bovenste muur onderhouds kotje",
+  "x" : 2030,
+  "y": 1715.5,
+  "width": 310,
+  "height": 18
+},
+{
+  "name": "linker bovenste muur onderhouds kotje",
+  "x" : 2030,
+  "y": 1725,
+  "width": 18,
+  "height": 84
+},
+{
+  "name": "linker onderste muur onderhouds kotje",
+  "x" : 2030,
+  "y": 1869,
+  "width": 18,
+  "height": 250
+},
+{
+  "name": "muur uisteek",
+  "x" : 1390,
+  "y": 1818,
+  "width": 331,
+  "height": 18
+},
+{
+  "name": "boven rechter muur atelier 2",
+  "x" : 1373,
+  "y": 1417.5,
+  "width": 18,
+  "height": 273
+},
+{
+  "name": "onder rechter muur atelier 1",
+  "x" : 1373,
+  "y": 1751,
+  "width": 18,
+  "height": 374
+},
+{
+  "name": "linker muur atelier 1",
+  "x" : 563,
+  "y": 1420,
+  "width": 18,
+  "height": 702
+},
+{
+  "name": "linker bovenste muur atelier 1",
+  "x" : 400,
+  "y": 1407,
+  "width": 386.5,
+  "height": 18
+},
+{
+  "name": "linker bovenste muur docenten lokaal",
+  "x" : 13,
+  "y": 1407,
+  "width": 267,
+  "height": 18
+},
+{
+  "name": "onderste muur",
+  "x" : 8,
+  "y": 2114.5,
+  "width": 2343,
+  "height": 18
+}             
+],
+"objects": [
+  {
+    "name": "linker dotje",
+    "x" : 120,
+    "y": 50,
+    "picture": "macbook"
+  },
+  {
+    "name": "linker muur kotje",
+    "x" : 250,
+    "y": 150,
+    "picture": "table-01"
+  } 
+]
+}
