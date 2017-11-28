@@ -3,8 +3,7 @@ import Player from '../objects/Player';
 import Wall from '../objects/Wall';
 let player;
 let wall;
-let weapon = 'axe';
-const wallPositions = [{name: "upper right wall", x: 800, y:600, width:660, height:130},{name: "upper left wall", x: 400, y:400, width:220, height:22}, {name: "upper down wall", x: 200, y:300, width:220, height:22}]
+const wallPositions = [{name: "boven muur kotje", x: 595, y:0, width:394, height:18}, {name: "rechter muur kotje", x:971, y:0, width:18, height:209}];
 
 export default class GameState extends Phaser.State {
   init() {
@@ -13,7 +12,7 @@ export default class GameState extends Phaser.State {
 
   preload() {
     console.log(`preload`);
-    this.load.image('map', 'assets/map.png', 1535, 1395);
+    this.load.image('map', 'assets/map.png', 2351, 2134);
     // this.load.image('player', 'assets/player.png', 75, 75);
     // this.load.spritesheet('player', 'assets/player-tileset.png', 36, 50);
     this.load.image('wall', 'assets/wall-01.png');
@@ -23,7 +22,7 @@ export default class GameState extends Phaser.State {
   }
 
   create() {
-    this.world.setBounds(0, 0, 1535*2, 1395*2);
+    this.world.setBounds(0, 0, 2351, 2134);
     this.setupBackground();
     // this.setupPlayer();
     player = new Player(this.game, this.game.width / 2, this.game.height / 2);
@@ -58,8 +57,8 @@ export default class GameState extends Phaser.State {
   }
 
   setupBackground() {
-    this.background = this.add.tileSprite(0, 0, 1535, 1395, 'map');
-    this.background.scale.setTo(2,2);
+    this.background = this.add.tileSprite(0, 0, 2351, 2134, 'map');
+    // this.background.scale.setTo(2,2);
   }
 
   update() {
