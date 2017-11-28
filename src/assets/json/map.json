@@ -216,20 +216,32 @@
   "y": 2114.5,
   "width": 2343,
   "height": 18
-}             
+}
 ],
 "objects": [
   {
-    "name": "linker dotje",
-    "x" : 120,
-    "y": 50,
-    "picture": "macbook"
+    "name": "bossuwee - rij 3",
+    "x" : 20,
+    "y": 266,
+    "width": 610,
+    "height":64,
+    "picture": "table-02"
   },
   {
-    "name": "linker muur kotje",
-    "x" : 250,
-    "y": 150,
-    "picture": "table-01"
-  } 
+    "name": "bossuwee - rij 2",
+    "x" : 20,
+    "y": 394,
+    "width": 610,
+    "height":64,
+    "picture": "table-02"
+  },
+  {
+    "name": "bossuwee - rij 1",
+    "x" : 20,
+    "y": 516,
+    "width": 610,
+    "height":64,
+    "picture": "table-02"
+  }
 ]
 }

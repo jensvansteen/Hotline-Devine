@@ -29,7 +29,6 @@ export default class Player extends Phaser.Sprite {
     });
   }
 
-
   walk(){
     if(!attack){
       const animation = this.animations.play('walk', 10, false);

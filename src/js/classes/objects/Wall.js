@@ -5,5 +5,4 @@ export default class Wall extends Phaser.TileSprite {
     this.enableBody = true;
     this.body.immovable = true;
   }
-
 }
