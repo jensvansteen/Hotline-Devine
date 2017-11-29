@@ -171,7 +171,7 @@
 {
   "name": "muur uisteek",
   "x" : 1390,
-  "y": 1818,
+  "y": 1787,
   "width": 331,
   "height": 18
 },
@@ -256,7 +256,7 @@
     "y": 266,
     "width": 610,
     "height":64,
-    "picture": "table-02"
+    "picture": "black-table-horizontal"
   },
   {
     "name": "bossuwee - rij 2",
@@ -264,7 +264,7 @@
     "y": 394,
     "width": 610,
     "height":64,
-    "picture": "table-02"
+    "picture": "black-table-horizontal"
   },
   {
     "name": "bossuwee - rij 1",
@@ -272,7 +272,7 @@
     "y": 516,
     "width": 610,
     "height":64,
-    "picture": "table-02"
+    "picture": "black-table-horizontal"
   },
   {
     "name": "bossuwee - bureau",
@@ -280,7 +280,7 @@
     "y": 578,
     "width": 122,
     "height":64,
-    "picture": "table-03"
+    "picture": "bureau-horizontal"
   },
   {
     "name": "atelier 2 - rij 1",
@@ -288,7 +288,7 @@
     "y": 1947,
     "width": 488,
     "height":64,
-    "picture": "table-02"
+    "picture": "black-table-horizontal"
   },
   {
     "name": "atelier 2 - rij 2",
@@ -296,7 +296,7 @@
     "y": 1831,
     "width": 488,
     "height":64,
-    "picture": "table-02"
+    "picture": "black-table-horizontal"
   },
   {
     "name": "atelier 2 - rij 3",
@@ -304,7 +304,7 @@
     "y": 1716,
     "width": 488,
     "height":64,
-    "picture": "table-02"
+    "picture": "black-table-horizontal"
   },
   {
     "name": "atelier 2 - rij 4",
@@ -312,7 +312,7 @@
     "y": 1604,
     "width": 488,
     "height":64,
-    "picture": "table-02"
+    "picture": "black-table-horizontal"
   },
   {
     "name": "atelier 2 - rij 5",
@@ -320,7 +320,7 @@
     "y": 1496,
     "width": 488,
     "height":64,
-    "picture": "table-02"
+    "picture": "black-table-horizontal"
   },
   {
     "name": "atelier 2 - bureau",
@@ -328,7 +328,7 @@
     "y": 2009,
     "width": 122,
     "height":64,
-    "picture": "table-03"
+    "picture": "bureau-horizontal"
   },
   {
     "name": "docentenlokaal - rij 1",
@@ -336,7 +336,7 @@
     "y": 1484,
     "width": 244,
     "height":64,
-    "picture": "table-03"
+    "picture": "bureau-horizontal"
   },
   {
     "name": "docentenlokaal - rij 2",
@@ -344,7 +344,7 @@
     "y": 1664,
     "width": 244,
     "height":64,
-    "picture": "table-03"
+    "picture": "bureau-horizontal"
   },
   {
     "name": "docentenlokaal - rij 3",
@@ -352,7 +352,7 @@
     "y": 1839,
     "width": 244,
     "height":64,
-    "picture": "table-03"
+    "picture": "bureau-horizontal"
   },
   {
     "name": "atelier 1 - kolom 1",
@@ -360,7 +360,7 @@
     "y": 325,
     "width": 68,
     "height": 236,
-    "picture": "table-04"
+    "picture": "wood-table-vertical"
   },
   {
     "name": "atelier 1 - kolom 2",
@@ -368,7 +368,7 @@
     "y": 325,
     "width": 68,
     "height": 236,
-    "picture": "table-04"
+    "picture": "wood-table-vertical"
   },
   {
     "name": "atelier 1 - kolom 3",
@@ -376,7 +376,7 @@
     "y": 205,
     "width": 68,
     "height": 354,
-    "picture": "table-04"
+    "picture": "wood-table-vertical"
   },
   {
     "name": "atelier 1 - kolom 4",
@@ -384,7 +384,7 @@
     "y": 205,
     "width": 68,
     "height": 354,
-    "picture": "table-04"
+    "picture": "wood-table-vertical"
   },
   {
     "name": "atelier 1 - ping pong",
@@ -395,12 +395,28 @@
     "picture": "pingpong"
   },
   {
+    "name": "atelier 1 - kast",
+    "x" : 1718,
+    "y": 20.2,
+    "width": 132,
+    "height": 63,
+    "picture": "kast-medium-horizontal"
+  },
+  {
     "name": "lobby - kicker",
     "x" : 100,
-    "y": 800,
+    "y": 888,
     "width": 186,
     "height": 107,
     "picture": "kicker"
+  },
+  {
+    "name": "lobby - kast",
+    "x" : 100,
+    "y": 695,
+    "width": 132,
+    "height": 63,
+    "picture": "kast-medium-horizontal"
   },
   {
     "name": "lobby - tafel 1",
@@ -408,7 +424,7 @@
     "y": 832,
     "width": 186,
     "height": 143,
-    "picture": "lobby-table"
+    "picture": "lobby-table-horizontal"
   },
   {
     "name": "lobby - tafel 2",
@@ -416,15 +432,15 @@
     "y": 832,
     "width": 186,
     "height": 143,
-    "picture": "lobby-table"
+    "picture": "lobby-table-horizontal"
   },
   {
     "name": "lobby - tafel 3",
     "x" : 171,
-    "y": 1030,
+    "y": 1139,
     "width": 186,
     "height": 143,
-    "picture": "lobby-table"
+    "picture": "lobby-table-horizontal"
   },
   {
     "name": "lobby - tafel 4",
@@ -432,7 +448,7 @@
     "y": 1090,
     "width": 186,
     "height": 143,
-    "picture": "lobby-table"
+    "picture": "lobby-table-horizontal"
   },
   {
     "name": "lobby - stair",
@@ -441,6 +457,86 @@
     "width": 180,
     "height": 339,
     "picture": "stair-01"
+  },
+  {
+    "name": "lobby - stair beneden",
+    "x" : 1691.5,
+    "y": 931.9,
+    "width": 142.2,
+    "height": 339,
+    "picture": "stair-02"
+  },
+  {
+    "name": "atelier 3 - kolom 1",
+    "x" : 1485.9,
+    "y": 1873.1,
+    "width": 60,
+    "height": 236,
+    "picture": "black-table-vertical"
+  },
+  {
+    "name": "atelier 3 - kolom 2",
+    "x" : 1611.7,
+    "y": 1873.1,
+    "width": 60,
+    "height": 236,
+    "picture": "black-table-vertical"
+  },
+  {
+    "name": "atelier 3 - kolom 3",
+    "x" : 1737.5,
+    "y": 1873.1,
+    "width": 60,
+    "height": 236,
+    "picture": "black-table-vertical"
+  },
+  {
+    "name": "atelier 3 - bureau",
+    "x" : 1424.5,
+    "y": 1928.1,
+    "width": 64,
+    "height": 122,
+    "picture": "bureau-vertical"
+  },
+  {
+    "name": "bossuwee - macbook rij 1",
+    "x" : 392,
+    "y": 536,
+    "width": 30,
+    "height": 20,
+    "picture": "macbook-horizontal"
+  },
+  {
+    "name": "lobby - plant 1",
+    "x" : 200,
+    "y": 704,
+    "width": 24,
+    "height": 21,
+    "picture": "plant"
+  },
+  {
+    "name": "lobby - plant 2",
+    "x" : 969,
+    "y": 1375,
+    "width": 24,
+    "height": 21,
+    "picture": "plant"
+  },
+  {
+    "name": "atelier 1 - plant 1",
+    "x" : 1528,
+    "y": 202,
+    "width": 24,
+    "height": 21,
+    "picture": "plant"
+  },
+  {
+    "name": "atelier 1 - plant 2",
+    "x" : 1335,
+    "y": 645,
+    "width": 24,
+    "height": 21,
+    "picture": "plant"
   }
 ]
 }

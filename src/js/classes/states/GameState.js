@@ -13,20 +13,24 @@ export default class GameState extends Phaser.State {
 
   preload() {
     console.log(`preload`);
-    this.load.image('map', 'assets/map2.png', 2351, 2134);
+    this.load.image('map', 'assets/map.png', 2351, 2134);
     this.load.image('wall-01', 'assets/wall-01.png');
     this.load.image('wall-02', 'assets/wall-02.png');
     this.load.json('objects', 'assets/json/map.json')
-    this.load.image('table-01', 'assets/objects/table-01.png');
-    this.load.image('table-02', 'assets/objects/table-02.png');
-    this.load.image('table-03', 'assets/objects/table-03.png');
-    this.load.image('table-04', 'assets/objects/table-04.png');
-    this.load.image('table-05', 'assets/objects/table-05.png');
-    this.load.image('pingpong', 'assets/objects/table-06.png');
-    this.load.image('kicker', 'assets/objects/table-07.png');
-    this.load.image('lobby-table', 'assets/objects/table-08.png');
+    this.load.image('wood-table-horizontal', 'assets/objects/wood-table-horizontal.png');
+    this.load.image('wood-table-vertical', 'assets/objects/wood-table-vertical.png');
+    this.load.image('black-table-horizontal', 'assets/objects/black-table-horizontal.png');
+    this.load.image('black-table-vertical', 'assets/objects/black-table-vertical.png');
+    this.load.image('bureau-horizontal', 'assets/objects/bureau-horizontal.png');
+    this.load.image('bureau-vertical', 'assets/objects/bureau-vertical.png');
+    this.load.image('lobby-table-horizontal', 'assets/objects/lobby-table-horizontal.png');
+    this.load.image('pingpong', 'assets/objects/pingpong.png');
+    this.load.image('kicker', 'assets/objects/kicker.png');
+    this.load.image('kast-medium-horizontal', 'assets/objects/kast-medium-horizontal.png');
     this.load.image('stair-01', 'assets/objects/stairs-01.png');
-    this.load.image('macbook', 'assets/objects/macbook.png');
+    this.load.image('stair-02', 'assets/objects/stairs-02.png');
+    this.load.image('macbook-horizontal', 'assets/objects/macbook-horizontal.png');
+    this.load.image('plant', 'assets/objects/plant.png');
     this.load.atlasJSONHash('player', 'assets/json/components.png', 'assets/json/components.json');
   }
 
