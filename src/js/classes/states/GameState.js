@@ -13,11 +13,19 @@ export default class GameState extends Phaser.State {
 
   preload() {
     console.log(`preload`);
-    this.load.image('map', 'assets/map.png', 2351, 2134);
-    this.load.image('wall', 'assets/wall-01.png');
+    this.load.image('map', 'assets/map2.png', 2351, 2134);
+    this.load.image('wall-01', 'assets/wall-01.png');
+    this.load.image('wall-02', 'assets/wall-02.png');
     this.load.json('objects', 'assets/json/map.json')
     this.load.image('table-01', 'assets/objects/table-01.png');
     this.load.image('table-02', 'assets/objects/table-02.png');
+    this.load.image('table-03', 'assets/objects/table-03.png');
+    this.load.image('table-04', 'assets/objects/table-04.png');
+    this.load.image('table-05', 'assets/objects/table-05.png');
+    this.load.image('pingpong', 'assets/objects/table-06.png');
+    this.load.image('kicker', 'assets/objects/table-07.png');
+    this.load.image('lobby-table', 'assets/objects/table-08.png');
+    this.load.image('stair-01', 'assets/objects/stairs-01.png');
     this.load.image('macbook', 'assets/objects/macbook.png');
     this.load.atlasJSONHash('player', 'assets/json/components.png', 'assets/json/components.json');
   }
@@ -28,7 +36,7 @@ export default class GameState extends Phaser.State {
     this.setupBackground();
 
     // this.setupPlayer();
-    player = new Player(this.game, this.game.width / 2, this.game.height / 2);
+    player = new Player(this.game, 900, 1068);
     player.scale.setTo(2,2);
     this.camera.follow(player);
     this.add.existing(player);
@@ -44,7 +52,7 @@ export default class GameState extends Phaser.State {
 
   setupWalls() {
   walls.forEach(wall => {
-        wall = new Wall(this.game, wall.x, wall.y, wall.width, wall.height);
+        wall = new Wall(this.game, wall.x, wall.y, wall.width, wall.height,wall.type);
         this.wallGroup.add(wall);
       }
       )
@@ -89,7 +97,7 @@ export default class GameState extends Phaser.State {
       }
     }
 
-  if (this.cursors.right.isDown) {
+  if (this.cursors.left.isDown) {
     player.shoot('axe');
   }
   if (this.cursors.right.isDown) {
