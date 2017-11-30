@@ -6,7 +6,7 @@ import PickUp from '../objects/PickUp';
 let player;
 let walls, mapObjects, pickUps;
 let shotgun, uzi;
-let weapon = 'axe';
+let weapon = 'uzi';
 
 export default class GameState extends Phaser.State {
   init() {
@@ -44,7 +44,7 @@ export default class GameState extends Phaser.State {
     this.setupBackground();
     // this.setupPlayer();
 
-    this.cursors = this.input.keyboard.createCursorKeys();
+
     this.wallGroup = this.add.group();
     this.mapObjectGroup = this.add.group();
     this.pickUpGroup = this.add.group();
@@ -54,18 +54,19 @@ export default class GameState extends Phaser.State {
     pickUps = Array.from(tempObjects.pickups);
     this.setupWalls();
     this.setupMapObjects();
-    this.setupWeapons();
     this.setupPickUps();
 
     player = new Player(this.game, 900, 1068);
     player.scale.setTo(2,2);
     this.camera.follow(player);
     this.add.existing(player);
+    this.cursors = this.input.keyboard.createCursorKeys();
+    this.setupWeapons();
   };
 
   setupWalls() {
   walls.forEach(wall => {
-        wall = new Wall(this.game, wall.x, wall.y, wall.width, wall.height,wall.type);
+        wall = new Wall(this.game, wall.x, wall.y, wall.width, wall.height,wall.type );
         this.wallGroup.add(wall);
       })
   };
@@ -89,13 +90,11 @@ export default class GameState extends Phaser.State {
     shotgun = this.game.add.weapon(10, 'bullet');
     shotgun.bulletSpeed = 600;
     shotgun.fireRate = 500;
-    shotgun.bulletKillType.KILL_WEAPON_BOUNDS;
     shotgun.trackSprite(player, 5, 5, true);
 
     uzi = this.game.add.weapon(30, 'bullet');
     uzi.bulletSpeed = 500;
     uzi.fireRate = 100;
-    uzi.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
     uzi.trackSprite(player, 30, -5, true);
   };
 
@@ -111,7 +110,7 @@ export default class GameState extends Phaser.State {
     this.processPlayerInput();
 
     pickUps.forEach(pickup =>{
-      this.physics.arcade.overlap(player, pickup, this.PlayerPickupHandler(pickup), null, this);
+      this.physics.arcade.overlap(pickup, player, this.PlayerPickupHandler, null, this);
     });
 
 
@@ -130,12 +129,13 @@ export default class GameState extends Phaser.State {
   };
 
   bulletWallHandler(bullet) {
-    // console.log('bullet hit wall');
+    console.log('bullet hit wall');
     bullet.kill();
   };
 
   PlayerPickupHandler(pickup){
-    console.log(pickup.name);
+    console.log('pickup');
+
     // weapon = pickup.name;
   }
 

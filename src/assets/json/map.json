@@ -542,8 +542,8 @@
 "pickups": [
   {
     "name": "shotgun",
-    "x" : 20,
-    "y": 350,
+    "x" : 700,
+    "y": 1000,
     "picture": "shotgun"
   }
 ]
