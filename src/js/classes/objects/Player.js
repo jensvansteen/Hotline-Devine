@@ -4,6 +4,8 @@ export default class Player extends Phaser.Sprite {
     super(game, x, y, 'player');
     this.anchor.setTo(0.5, 0.5);
     this.data.speed = 350;
+    this.scale.setTo(2, 2);
+    this.health = 100;
     this.game.physics.enable(this, Phaser.Physics.ARCADE);
     // this.game.physics.arcade.enableBody(this);
     this.body.collideWorldBounds = true;
