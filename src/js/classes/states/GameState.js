@@ -63,6 +63,7 @@ export default class GameState extends Phaser.State {
     this.setupEnemies();
     this.setupPickUps();
     this.setupWeapons();
+
   };
 
   setupEnemies() {
@@ -194,20 +195,33 @@ setupWeapons(){
     });
 
     this.physics.arcade.overlap(player, this.pickUpGroup, this.playerPickupHandler, null, this);
+
+    // pickUps.forEach(pickup =>{
+      // console.log(pickup);
+      // this.physics.arcade.overlap(pickup, player, this.playerPickupHandler, null, this);
+  //   });
+
+  };
+
+  playerPickupHandler(player) {
+    // console.log(player.x);
+    this.pickUpGroup.forEach(pickup => {
+      if(Phaser.Math.distance(pickup.position.x, pickup.position.y, player.x, player.y) < 60){
+        // console.log(pickup.key);
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
+          weapon = pickup.key;
+          console.log(weapon);
+        }
+      }
+    });
+
+      // console.log(pickup);
+      // // if (this.cursors.down.isDown) {
+      // //   weapon = pickup.name;
+      // // };
   };
   
-  playerPickupHandler(player) {
-  // console.log(player.x);
-  this.pickUpGroup.forEach(pickup => {
-    if(Phaser.Math.distance(pickup.position.x, pickup.position.y, player.x, player.y) < 60){
-      // console.log(pickup.key);
-      if(this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
-        weapon = pickup.key;
-        console.log(weapon);
-      }
-    }
-  });
-};
+
 
   collisionHandler() {
     console.log(`hit`);
