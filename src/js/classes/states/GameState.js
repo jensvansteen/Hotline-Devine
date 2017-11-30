@@ -2,9 +2,11 @@
 import Player from '../objects/Player';
 import Wall from '../objects/Wall';
 import MapObject from '../objects/MapObject';
+import PickUp from '../objects/PickUp';
 let player;
-let walls;
-let mapObjects;
+let walls, mapObjects, pickUps;
+let shotgun, uzi;
+let weapon = 'axe';
 
 export default class GameState extends Phaser.State {
   init() {
@@ -16,7 +18,7 @@ export default class GameState extends Phaser.State {
     this.load.image('map', 'assets/map.png', 2351, 2134);
     this.load.image('wall-01', 'assets/wall-01.png');
     this.load.image('wall-02', 'assets/wall-02.png');
-    this.load.json('objects', 'assets/json/map.json')
+    this.load.json('objects', 'assets/json/map.json');
     this.load.image('wood-table-horizontal', 'assets/objects/wood-table-horizontal.png');
     this.load.image('wood-table-vertical', 'assets/objects/wood-table-vertical.png');
     this.load.image('black-table-horizontal', 'assets/objects/black-table-horizontal.png');
@@ -31,6 +33,8 @@ export default class GameState extends Phaser.State {
     this.load.image('stair-02', 'assets/objects/stairs-02.png');
     this.load.image('macbook-horizontal', 'assets/objects/macbook-horizontal.png');
     this.load.image('plant', 'assets/objects/plant.png');
+    this.load.image('bullet', 'assets/bullet.png');
+    this.load.image('shotgun', 'assets/pickups/shotgun.png');
     this.load.atlasJSONHash('player', 'assets/json/components.png', 'assets/json/components.json');
   }
 
@@ -38,52 +42,102 @@ export default class GameState extends Phaser.State {
     this.world.setBounds(0, 0, 2351, 2134);
 
     this.setupBackground();
-
     // this.setupPlayer();
+
+    this.cursors = this.input.keyboard.createCursorKeys();
+    this.wallGroup = this.add.group();
+    this.mapObjectGroup = this.add.group();
+    this.pickUpGroup = this.add.group();
+    let tempObjects = this.game.cache.getJSON('objects');
+    walls = Array.from(tempObjects.walls);
+    mapObjects = Array.from(tempObjects.objects);
+    pickUps = Array.from(tempObjects.pickups);
+    this.setupWalls();
+    this.setupMapObjects();
+    this.setupWeapons();
+    this.setupPickUps();
+
     player = new Player(this.game, 900, 1068);
     player.scale.setTo(2,2);
     this.camera.follow(player);
     this.add.existing(player);
-    this.cursors = this.input.keyboard.createCursorKeys();
-    this.wallGroup = this.add.group();
-    this.mapObjectGroup = this.add.group();
-    let tempObjects = this.game.cache.getJSON('objects');
-    walls = Array.from(tempObjects.walls);
-    mapObjects = Array.from(tempObjects.objects);
-    this.setupWalls();
-    this.setupMapObjects();
   };
 
   setupWalls() {
   walls.forEach(wall => {
         wall = new Wall(this.game, wall.x, wall.y, wall.width, wall.height,wall.type);
         this.wallGroup.add(wall);
-      }
-      )
+      })
   };
 
   setupMapObjects() {
     mapObjects.forEach(object => {
       object = new MapObject(this.game, object.x, object.y, object.width, object.height, object.picture);
-      console.log(object);
+      // console.log(object);
       this.mapObjectGroup.add(object);
     })
   };
 
+  setupPickUps() {
+    pickUps.forEach(pickup => {
+      pickup = new PickUp(this.game, pickup.x, pickup.y, pickup.picture);
+      this.pickUpGroup.add(pickup);
+    })
+  };
+
+  setupWeapons(){
+    shotgun = this.game.add.weapon(10, 'bullet');
+    shotgun.bulletSpeed = 600;
+    shotgun.fireRate = 500;
+    shotgun.bulletKillType.KILL_WEAPON_BOUNDS;
+    shotgun.trackSprite(player, 5, 5, true);
+
+    uzi = this.game.add.weapon(30, 'bullet');
+    uzi.bulletSpeed = 500;
+    uzi.fireRate = 100;
+    uzi.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
+    uzi.trackSprite(player, 30, -5, true);
+  };
+
+
+
   setupBackground() {
     this.background = this.add.tileSprite(0, 0, 2351, 2134, 'map');
-    // this.background.scale.setTo(2,2);
   };
 
   update() {
     this.physics.arcade.collide(player, this.wallGroup, this.collisionHandler, null, this);
     this.physics.arcade.collide(player, this.mapObjectGroup, this.collisionHandler, null, this);
     this.processPlayerInput();
+
+    pickUps.forEach(pickup =>{
+      this.physics.arcade.overlap(player, pickup, this.PlayerPickupHandler(pickup), null, this);
+    });
+
+
+    uzi.bullets.forEach(bullet =>{
+      this.physics.arcade.overlap(bullet, this.wallGroup, this.bulletWallHandler, null, this);
+    });
+    shotgun.bullets.forEach(bullet =>{
+      this.physics.arcade.overlap(bullet, this.wallGroup, this.bulletWallHandler, null, this);
+    });
+
+
   };
 
   collisionHandler() {
-    console.log(`hit`);
+    // console.log(`hit`);
   };
+
+  bulletWallHandler(bullet) {
+    // console.log('bullet hit wall');
+    bullet.kill();
+  };
+
+  PlayerPickupHandler(pickup){
+    console.log(pickup.name);
+    // weapon = pickup.name;
+  }
 
   processPlayerInput() {
     let distanceToPlayer = this.physics.arcade.distanceToPointer(player);
@@ -101,12 +155,22 @@ export default class GameState extends Phaser.State {
       }
     }
 
-  if (this.cursors.left.isDown) {
-    player.shoot('axe');
-  }
-  if (this.cursors.right.isDown) {
-    player.shoot('gun');
-  }
+  // if (this.cursors.left.isDown) {
+  //   player.shoot('axe');
+  // }
+  if (this.game.input.activePointer.isDown)
+    {
+    player.shoot(weapon);
+    if(weapon === 'uzi'){
+      uzi.fire();
+    }
+    if(weapon === 'shotgun'){
+      shotgun.fire();
+    }
+    }
+  // if (this.cursors.right.isDown) {
+  //   player.shoot('gun');
+  // }
   // old walking mechanics
   // if (this.cursors.left.isDown && !this.cursors.up.isDown && !this.cursors.right.isDown && !this.cursors.down.isDown) {
   //   player.walk();
