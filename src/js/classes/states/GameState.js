@@ -2,10 +2,12 @@ import Player from '../objects/Player';
 import Wall from '../objects/Wall';
 import MapObject from '../objects/MapObject';
 import Enemy from '../objects/Enemy';
+import PickUp from '../objects/PickUp';
 let player;
-let walls;
-let mapObjects;
+let walls, mapObjects, pickUps;
 let numEnemys = 10;
+let shotgun, uzi;
+let weapon = 'uzi';
 
 export default class GameState extends Phaser.State {
   init() {
@@ -17,7 +19,7 @@ export default class GameState extends Phaser.State {
     this.load.image('map', 'assets/map.png', 2351, 2134);
     this.load.image('wall-01', 'assets/wall-01.png');
     this.load.image('wall-02', 'assets/wall-02.png');
-    this.load.json('objects', 'assets/json/map.json')
+    this.load.json('objects', 'assets/json/map.json');
     this.load.image('wood-table-horizontal', 'assets/objects/wood-table-horizontal.png');
     this.load.image('wood-table-vertical', 'assets/objects/wood-table-vertical.png');
     this.load.image('black-table-horizontal', 'assets/objects/black-table-horizontal.png');
@@ -32,6 +34,9 @@ export default class GameState extends Phaser.State {
     this.load.image('stair-02', 'assets/objects/stairs-02.png');
     this.load.image('macbook-horizontal', 'assets/objects/macbook-horizontal.png');
     this.load.image('plant', 'assets/objects/plant.png');
+    this.load.image('bullet', 'assets/bullet.png');
+    this.load.image('shotgun', 'assets/pickups/shotgun.png');
+    this.load.image('uzi', 'assets/pickups/uzi.png');
     this.load.atlasJSONHash('player', 'assets/json/components.png', 'assets/json/components.json');
   }
 
@@ -47,13 +52,17 @@ export default class GameState extends Phaser.State {
     this.cursors = this.input.keyboard.createCursorKeys();
     this.wallGroup = this.add.group();
     this.mapObjectGroup = this.add.group();
+    this.pickUpGroup = this.add.group();
     this.enemyPool = this.add.group();
     let tempObjects = this.game.cache.getJSON('objects');
     walls = Array.from(tempObjects.walls);
     mapObjects = Array.from(tempObjects.objects);
+    pickUps = Array.from(tempObjects.pickups);
     this.setupWalls();
     this.setupMapObjects();
     this.setupEnemies();
+    this.setupPickUps();
+    this.setupWeapons();
   };
 
   setupEnemies() {
@@ -94,6 +103,26 @@ export default class GameState extends Phaser.State {
       this.mapObjectGroup.add(object);
     })
   };
+  
+  setupPickUps() {
+  pickUps.forEach(pickup => {
+    pickup = new PickUp(this.game, pickup.x, pickup.y, pickup.picture);
+    this.pickUpGroup.add(pickup);
+  })
+};
+
+
+setupWeapons(){
+  shotgun = this.game.add.weapon(10, 'bullet');
+  shotgun.bulletSpeed = 600;
+  shotgun.fireRate = 500;
+  shotgun.trackSprite(player, 5, 5, true);
+
+  uzi = this.game.add.weapon(30, 'bullet');
+  uzi.bulletSpeed = 500;
+  uzi.fireRate = 100;
+  uzi.trackSprite(player, 30, -5, true);
+};
 
   setupBackground() {
     this.background = this.add.tileSprite(0, 0, 2351, 2134, 'map');
@@ -157,11 +186,37 @@ export default class GameState extends Phaser.State {
     this.spawnEnemies();
     this.processPlayerInput();
     // console.log(this.enemyPool.length);
+    uzi.bullets.forEach(bullet =>{
+      this.physics.arcade.overlap(bullet, this.wallGroup, this.bulletWallHandler, null, this);
+    });
+    shotgun.bullets.forEach(bullet =>{
+      this.physics.arcade.overlap(bullet, this.wallGroup, this.bulletWallHandler, null, this);
+    });
+
+    this.physics.arcade.overlap(player, this.pickUpGroup, this.playerPickupHandler, null, this);
   };
+  
+  playerPickupHandler(player) {
+  // console.log(player.x);
+  this.pickUpGroup.forEach(pickup => {
+    if(Phaser.Math.distance(pickup.position.x, pickup.position.y, player.x, player.y) < 60){
+      // console.log(pickup.key);
+      if(this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
+        weapon = pickup.key;
+        console.log(weapon);
+      }
+    }
+  });
+};
 
   collisionHandler() {
     console.log(`hit`);
   };
+  
+  bulletWallHandler(bullet) {
+  // console.log('bullet hit wall');
+  bullet.kill();
+};
   
   enemyPlayerCollision() {
     player.damage(1);
@@ -185,12 +240,22 @@ export default class GameState extends Phaser.State {
       }
     }
 
-    if (this.cursors.left.isDown) {
-      player.shoot('axe');
-    }
-    if (this.cursors.right.isDown) {
-      player.shoot('gun');
-    }
+    // if (this.cursors.left.isDown) {
+    //   player.shoot('axe');
+    // }
+    if (this.game.input.activePointer.isDown)
+  {
+  player.shoot(weapon);
+  if(weapon === 'uzi'){
+    uzi.fire();
+  }
+  if(weapon === 'shotgun'){
+    shotgun.fire();
+  }
+  }
+    // if (this.cursors.right.isDown) {
+    //   player.shoot('gun');
+    // }
     // old walking mechanics
     // if (this.cursors.left.isDown && !this.cursors.up.isDown && !this.cursors.right.isDown && !this.cursors.down.isDown) {
     //   player.walk();
