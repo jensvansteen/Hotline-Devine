@@ -545,6 +545,12 @@
     "x" : 700,
     "y": 1000,
     "picture": "shotgun"
+  },
+  {
+    "name": "uzi",
+    "x" : 500,
+    "y": 1000,
+    "picture": "uzi"
   }
 ]
 }

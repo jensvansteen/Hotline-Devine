@@ -35,6 +35,7 @@ export default class GameState extends Phaser.State {
     this.load.image('plant', 'assets/objects/plant.png');
     this.load.image('bullet', 'assets/bullet.png');
     this.load.image('shotgun', 'assets/pickups/shotgun.png');
+    this.load.image('uzi', 'assets/pickups/uzi.png');
     this.load.atlasJSONHash('player', 'assets/json/components.png', 'assets/json/components.json');
   }
 
@@ -62,6 +63,7 @@ export default class GameState extends Phaser.State {
     this.add.existing(player);
     this.cursors = this.input.keyboard.createCursorKeys();
     this.setupWeapons();
+
   };
 
   setupWalls() {
@@ -109,11 +111,6 @@ export default class GameState extends Phaser.State {
     this.physics.arcade.collide(player, this.mapObjectGroup, this.collisionHandler, null, this);
     this.processPlayerInput();
 
-    pickUps.forEach(pickup =>{
-      this.physics.arcade.overlap(pickup, player, this.PlayerPickupHandler, null, this);
-    });
-
-
     uzi.bullets.forEach(bullet =>{
       this.physics.arcade.overlap(bullet, this.wallGroup, this.bulletWallHandler, null, this);
     });
@@ -121,7 +118,31 @@ export default class GameState extends Phaser.State {
       this.physics.arcade.overlap(bullet, this.wallGroup, this.bulletWallHandler, null, this);
     });
 
+    this.physics.arcade.overlap(player, this.pickUpGroup, this.playerPickupHandler, null, this);
 
+    // pickUps.forEach(pickup =>{
+      // console.log(pickup);
+      // this.physics.arcade.overlap(pickup, player, this.playerPickupHandler, null, this);
+  //   });
+
+  };
+
+  playerPickupHandler(player) {
+    // console.log(player.x);
+    this.pickUpGroup.forEach(pickup => {
+      if(Phaser.Math.distance(pickup.position.x, pickup.position.y, player.x, player.y) < 60){
+        // console.log(pickup.key);
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
+          weapon = pickup.key;
+          console.log(weapon);
+        }
+      }
+    });
+
+      // console.log(pickup);
+      // // if (this.cursors.down.isDown) {
+      // //   weapon = pickup.name;
+      // // };
   };
 
   collisionHandler() {
@@ -129,15 +150,10 @@ export default class GameState extends Phaser.State {
   };
 
   bulletWallHandler(bullet) {
-    console.log('bullet hit wall');
+    // console.log('bullet hit wall');
     bullet.kill();
   };
 
-  PlayerPickupHandler(pickup){
-    console.log('pickup');
-
-    // weapon = pickup.name;
-  }
 
   processPlayerInput() {
     let distanceToPlayer = this.physics.arcade.distanceToPointer(player);
