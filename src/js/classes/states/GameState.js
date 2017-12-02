@@ -8,7 +8,9 @@ let walls, mapObjects, pickUps;
 let numEnemys = 10;
 let shotgun, uzi;
 let weapon = 'uzi';
-let firstRender = true; 
+let firstRender = true;
+let wave = 1;
+ 
 const firstPlayerX = 900;
 const firstPlayerY = 1060;
 
@@ -135,7 +137,7 @@ setupWeapons(){
   };
   
   spawnEnemies() {
-
+  
     this.enemyPool.forEach(enemy => {
 
       if(enemy.alive && Phaser.Math.distance(enemy.x, enemy.y, player.x, player.y) < 400){
@@ -151,10 +153,26 @@ setupWeapons(){
       enemy.rotation = 90;
       
     }
+    
+    if(!enemy.alive){
+      this.enemyPool.remove(enemy);
+    }
+    
+    if(this.enemyPool.length === 0){
+      wave++;
+      this.startNewWave();
+    }
   
       enemy.walk();
 
     });
+  }
+  
+  startNewWave() {
+    numEnemys += wave* 5; 
+    console.log(wave);
+    console.log("wave 1 done");
+    this.setupEnemies();
   }
 
   checkDistanceWithCamera(enemy) {
@@ -164,8 +182,6 @@ setupWeapons(){
     // console.log(cameraInitX);
     // console.log(cameraInitY);
     
-    console.log(enemy.x);
-    console.log(enemy.y);
   
   if(enemy.x > cameraInitX && enemy.x < cameraInitX + this.camera.width && enemy.y > cameraInitY && enemy.y < cameraInitY + this.camera.height && firstRender){
      enemy.reset(this.game.rnd.integerInRange(30, this.background.width - 30), this.game.rnd.integerInRange(30, this.background.height - 30), 10);
