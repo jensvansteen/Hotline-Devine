@@ -10,7 +10,7 @@ export default class Player extends Phaser.Sprite {
     // this.game.physics.arcade.enableBody(this);
     this.body.collideWorldBounds = true;
     this.animations.add('stand', ['1.png'], 10, true, true);
-    this.animations.add('walk', ['walk_1.png','walk_2.png','walk_3.png','walk_4.png','walk_5.png','walk_6.png'], 20, true, true);
+    this.animations.add('walk', ['walk_1.png','walk_2.png','walk_3.png','walk_4.png','walk_5.png','walk_6.png','1.png'], 20, true, true);
     this.animations.add('axe', ['axe_1.png','axe_2.png','axe_3.png','axe_4.png'], 10, true, true);
     this.animations.add('shotgun', ['shotgun_1.png','shotgun_2.png','shotgun_3.png','shotgun_4.png'], 10, true, true);
     this.animations.add('uzi', ['uzi_1.png','uzi_2.png','uzi_3.png'],20, true, true);

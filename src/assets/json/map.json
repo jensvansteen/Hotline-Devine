@@ -541,16 +541,22 @@
 ],
 "pickups": [
   {
-    "name": "shotgun",
+    "name": "shotgun - atelier 1",
     "x" : 700,
     "y": 1000,
     "picture": "shotgun"
   },
   {
-    "name": "uzi",
+    "name": "uzi - kuislokaal atelier 3",
     "x" : 500,
     "y": 1000,
     "picture": "uzi"
+  },
+  {
+    "name": "axe - docentenlokaal",
+    "x" : 450,
+    "y": 1450,
+    "picture": "axe"
   }
 ]
 }

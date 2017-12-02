@@ -7,7 +7,7 @@ let player;
 let walls, mapObjects, pickUps;
 let numEnemys = 10;
 let shotgun, uzi;
-let weapon = 'uzi';
+let weapon = 'axe';
 
 export default class GameState extends Phaser.State {
   init() {
@@ -37,6 +37,7 @@ export default class GameState extends Phaser.State {
     this.load.image('bullet', 'assets/bullet.png');
     this.load.image('shotgun', 'assets/pickups/shotgun.png');
     this.load.image('uzi', 'assets/pickups/uzi.png');
+    this.load.image('axe', 'assets/pickups/axe.png');
     this.load.atlasJSONHash('player', 'assets/json/components.png', 'assets/json/components.json');
   }
 
@@ -44,12 +45,6 @@ export default class GameState extends Phaser.State {
     this.world.setBounds(0, 0, 2351, 2134);
 
     this.setupBackground();
-
-    // this.setupPlayer();
-    player = new Player(this.game, 900, 1068);
-    this.camera.follow(player);
-    this.add.existing(player);
-    this.cursors = this.input.keyboard.createCursorKeys();
     this.wallGroup = this.add.group();
     this.mapObjectGroup = this.add.group();
     this.pickUpGroup = this.add.group();
@@ -60,10 +55,14 @@ export default class GameState extends Phaser.State {
     pickUps = Array.from(tempObjects.pickups);
     this.setupWalls();
     this.setupMapObjects();
-    this.setupEnemies();
-    this.setupPickUps();
-    this.setupWeapons();
 
+    player = new Player(this.game, 300, 1800);
+    this.camera.follow(player);
+    this.add.existing(player);
+    this.cursors = this.input.keyboard.createCursorKeys();
+    this.setupWeapons();
+    this.setupPickUps();
+    // this.setupEnemies();
   };
 
   setupEnemies() {
@@ -104,7 +103,7 @@ export default class GameState extends Phaser.State {
       this.mapObjectGroup.add(object);
     })
   };
-  
+
   setupPickUps() {
   pickUps.forEach(pickup => {
     pickup = new PickUp(this.game, pickup.x, pickup.y, pickup.picture);
@@ -120,7 +119,7 @@ setupWeapons(){
   shotgun.trackSprite(player, 5, 5, true);
 
   uzi = this.game.add.weapon(30, 'bullet');
-  uzi.bulletSpeed = 500;
+  uzi.bulletSpeed = 800;
   uzi.fireRate = 100;
   uzi.trackSprite(player, 30, -5, true);
 };
@@ -136,27 +135,21 @@ setupWeapons(){
     this.checkEnemyWallOverlap();
 
   };
-  
-  anotherCheck() {
-      
-      
-         this.enemyPool.forEach(enemy => {
-           console.log(enemy)
 
-           // this.checkDistanceWithPlayer(player, enemy);
-           if (Phaser.Math.distance(enemy.x, enemy.y, player.x, player.y) < 800){
-              enemy.reset(this.game.rnd.integerInRange(50, this.background.width - 50), this.game.rnd.integerInRange(50, this.background.height - 50), 10);
-                this.checkDistanceWithPlayer(player, enemy);
+  anotherCheck() {
+    this.enemyPool.forEach(enemy => {
+    // console.log(enemy)
+    // this.checkDistanceWithPlayer(player, enemy);
+    if (Phaser.Math.distance(enemy.x, enemy.y, player.x, player.y) < 800){
+      enemy.reset(this.game.rnd.integerInRange(50, this.background.width - 50), this.game.rnd.integerInRange(50, this.background.height - 50), 10);
+      this.checkDistanceWithPlayer(player, enemy);
      }
-         });
-    
+    });
   }
 
 
   spawnEnemies() {
-
     this.enemyPool.forEach(enemy => {
-
       // this.checkDistanceWithPlayer(player, enemy);
       if(enemy.alive && Phaser.Math.distance(enemy.x, enemy.y, player.x, player.y) < 400){
       let angle = this.game.physics.arcade.angleBetween(enemy, player);
@@ -177,10 +170,11 @@ setupWeapons(){
       this.checkDistanceWithPlayer(player, enemy);
     }
 
-  }
+  };
 
   update() {
     this.physics.arcade.collide(player, this.wallGroup, this.collisionHandler, null, this);
+    this.physics.arcade.overlap(player, this.wallGroup, this.overlapHandler, null, this);
     this.physics.arcade.collide(player, this.mapObjectGroup, this.collisionHandler, null, this);
     this.physics.arcade.collide(player, this.enemyPool, this.enemyPlayerCollision, null, this);
 
@@ -195,18 +189,13 @@ setupWeapons(){
     });
 
     this.physics.arcade.overlap(player, this.pickUpGroup, this.playerPickupHandler, null, this);
-
-    // pickUps.forEach(pickup =>{
-      // console.log(pickup);
-      // this.physics.arcade.overlap(pickup, player, this.playerPickupHandler, null, this);
-  //   });
-
   };
 
   playerPickupHandler(player) {
     // console.log(player.x);
     this.pickUpGroup.forEach(pickup => {
-      if(Phaser.Math.distance(pickup.position.x, pickup.position.y, player.x, player.y) < 60){
+      // console.log(pickup);
+      if(Phaser.Math.distance(pickup.position.x, pickup.position.y, player.x, player.y) < 100){
         // console.log(pickup.key);
         if(this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
           weapon = pickup.key;
@@ -214,29 +203,36 @@ setupWeapons(){
         }
       }
     });
-
-      // console.log(pickup);
-      // // if (this.cursors.down.isDown) {
-      // //   weapon = pickup.name;
-      // // };
   };
-  
 
+  overlapHandler(){
+    // console.log('overlap');
+    player.x-=10;
+    player.y-=10;
+  };
 
   collisionHandler() {
-    console.log(`hit`);
+    // console.log(`hit`);
+    console.log(player.x);
+    // this.wallGroup.forEach(wall =>{
+    //   // if(Phaser.Math.distance(player.x, player.y, wall.x, wall.y ) < 0){
+    //   //   console.log('setback');
+    //   }
+    // })
+
+    // player.x ==
   };
-  
+
   bulletWallHandler(bullet) {
-  // console.log('bullet hit wall');
-  bullet.kill();
-};
-  
+    // console.log('bullet hit wall');
+    bullet.kill();
+  };
+
   enemyPlayerCollision() {
     player.damage(1);
     player.body.bounce.setTo(1.1);
     console.log(player.health);
-  }
+  };
 
   processPlayerInput() {
     let distanceToPlayer = this.physics.arcade.distanceToPointer(player);
@@ -254,19 +250,18 @@ setupWeapons(){
       }
     }
 
-    // if (this.cursors.left.isDown) {
-    //   player.shoot('axe');
-    // }
-    if (this.game.input.activePointer.isDown)
-  {
-  player.shoot(weapon);
-  if(weapon === 'uzi'){
-    uzi.fire();
-  }
-  if(weapon === 'shotgun'){
-    shotgun.fire();
-  }
-  }
+  if (this.game.input.activePointer.isDown){
+    if(weapon != 'none'){
+      player.shoot(weapon);
+
+      if(weapon === 'uzi'){
+        uzi.fire();
+      }
+      if(weapon === 'shotgun'){
+        shotgun.fire();
+      }
+    }
+  };
     // if (this.cursors.right.isDown) {
     //   player.shoot('gun');
     // }
@@ -291,5 +286,7 @@ setupWeapons(){
     // }
   }
 
-  render() {}
+  render() {
+     // this.game.debug.spriteInfo(player, 32, 32);
+  }
 }
