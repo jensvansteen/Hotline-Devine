@@ -7,17 +7,11 @@ let player;
 let walls, mapObjects, pickUps;
 let numEnemys = 10;
 let shotgun, uzi;
-<<<<<<< HEAD
-let weapon = 'axe';
-=======
-let weapon = 'uzi';
+let weapon = 'none';
 let firstRender = true;
 let wave = 1;
-
 const firstPlayerX = 900;
 const firstPlayerY = 1060;
-
->>>>>>> d701632fe36ab71a6b37f726ad1b4cf6bc5a30b4
 
 export default class GameState extends Phaser.State {
   init() {
@@ -255,30 +249,21 @@ setupWeapons(){
 
   }
 
+  overlapHandler() {
+    player.x-=10;
+    player.y-=10;
+  }
+
   collisionHandler() {
     // console.log(`hit`);
-    console.log(player.x);
-    // this.wallGroup.forEach(wall =>{
-    //   // if(Phaser.Math.distance(player.x, player.y, wall.x, wall.y ) < 0){
-    //   //   console.log('setback');
-    //   }
-    // })
-
-    // player.x ==
   };
 
   changeEnemyDirection(enemy, object) {
-
-
     if(enemy.enemyFolow){
       if(enemy.x > object.x){
         enemy.body.velocity.setTo(40, 0);
       }
-
     }
-
-
-
   }
 
   bulletWallHandler(bullet) {
