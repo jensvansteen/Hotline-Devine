@@ -4,11 +4,15 @@ import MapObject from '../objects/MapObject';
 import Enemy from '../objects/Enemy';
 import PickUp from '../objects/PickUp';
 let player;
-let walls, mapObjects, pickUps;
+let walls,
+  mapObjects,
+  pickUps,
+  opvul;
 let numEnemys = 10;
-let shotgun, uzi;
+let shotgun,
+  uzi;
 let weapon = 'none';
-let firstRender = true;
+let firstRender;
 let wave = 1;
 const firstPlayerX = 900;
 const firstPlayerY = 1060;
@@ -48,8 +52,10 @@ export default class GameState extends Phaser.State {
   create() {
     this.world.setBounds(0, 0, 2351, 2134);
 
+    firstRender = true;
     this.setupBackground();
     this.wallGroup = this.add.group();
+    this.opvulGroup = this.add.group();
     this.mapObjectGroup = this.add.group();
     this.pickUpGroup = this.add.group();
     this.enemyPool = this.add.group();
@@ -57,8 +63,10 @@ export default class GameState extends Phaser.State {
     walls = Array.from(tempObjects.walls);
     mapObjects = Array.from(tempObjects.objects);
     pickUps = Array.from(tempObjects.pickups);
+    opvul = Array.from(tempObjects.opvul);
     this.setupWalls();
     this.setupMapObjects();
+    this.setupOpvul();
 
     player = new Player(this.game, firstPlayerX, firstPlayerY);
     this.camera.follow(player);
@@ -77,12 +85,10 @@ export default class GameState extends Phaser.State {
       this.checkDistanceWithCamera(tempEnemy);
       this.enemyPool.add(tempEnemy);
       this.checkEnemyWallOverlap();
-      if(i === numEnemys){
+      if (i === numEnemys-1) {
         firstRender = false;
       };
     }
-
-
 
   };
 
@@ -92,10 +98,20 @@ export default class GameState extends Phaser.State {
       this.wallGroup.add(wall);
     })
   };
+  
+  setupOpvul() {
+    opvul.forEach(vlak => {
+      vlak = new Wall(this.game, vlak.x, vlak.y, vlak.width, vlak.height, vlak.type);
+      vlak.visible = false;
+      this.opvulGroup.add(vlak);
+      console.log(this.opvulGroup);
+    })
+  }
 
   checkEnemyWallOverlap() {
     this.physics.arcade.overlap(this.wallGroup, this.enemyPool, this.enemyWallOverlap, null, this);
     this.physics.arcade.overlap(this.mapObjectGroup, this.enemyPool, this.enemyWallOverlap, null, this);
+    this.physics.arcade.overlap(this.opvulGroup, this.enemyPool, this.enemyWallOverlap, null, this);
   }
 
   setupMapObjects() {
@@ -106,24 +122,23 @@ export default class GameState extends Phaser.State {
   };
 
   setupPickUps() {
-  pickUps.forEach(pickup => {
-    pickup = new PickUp(this.game, pickup.x, pickup.y, pickup.picture);
-    this.pickUpGroup.add(pickup);
-  })
-};
+    pickUps.forEach(pickup => {
+      pickup = new PickUp(this.game, pickup.x, pickup.y, pickup.picture);
+      this.pickUpGroup.add(pickup);
+    })
+  };
 
+  setupWeapons() {
+    shotgun = this.game.add.weapon(10, 'bullet');
+    shotgun.bulletSpeed = 600;
+    shotgun.fireRate = 500;
+    shotgun.trackSprite(player, 5, 5, true);
 
-setupWeapons(){
-  shotgun = this.game.add.weapon(10, 'bullet');
-  shotgun.bulletSpeed = 600;
-  shotgun.fireRate = 500;
-  shotgun.trackSprite(player, 5, 5, true);
-
-  uzi = this.game.add.weapon(30, 'bullet');
-  uzi.bulletSpeed = 800;
-  uzi.fireRate = 100;
-  uzi.trackSprite(player, 30, -5, true);
-};
+    uzi = this.game.add.weapon(30, 'bullet');
+    uzi.bulletSpeed = 800;
+    uzi.fireRate = 100;
+    uzi.trackSprite(player, 30, -5, true);
+  };
 
   setupBackground() {
     this.background = this.add.tileSprite(0, 0, 2351, 2134, 'map');
@@ -139,28 +154,28 @@ setupWeapons(){
 
     this.enemyPool.forEach(enemy => {
 
-      if(enemy.alive && Phaser.Math.distance(enemy.x, enemy.y, player.x, player.y) < 400){
-      enemy.enemyFolow = true;
-      let angle = this.game.physics.arcade.angleBetween(enemy, player);
-      enemy.rotation = angle;
-      this.game.physics.arcade.moveToObject(enemy, player, 200);
+      if (enemy.alive && Phaser.Math.distance(enemy.x, enemy.y, player.x, player.y) < 400) {
+        enemy.enemyFolow = true;
+        let angle = this.game.physics.arcade.angleBetween(enemy, player);
+        enemy.rotation = angle;
+        this.game.physics.arcade.moveToObject(enemy, player, 200);
 
-    }
+      }
 
-    if(enemy.alive && Phaser.Math.distance(enemy.x, enemy.y, player.x, player.y) > 600) {
-      enemy.enemyFolow = false;
-      enemy.rotation = 90;
+      if (enemy.alive && Phaser.Math.distance(enemy.x, enemy.y, player.x, player.y) > 600) {
+        enemy.enemyFolow = false;
+        enemy.rotation = 90;
 
-    }
+      }
 
-    if(!enemy.alive){
-      this.enemyPool.remove(enemy);
-    }
+      if (!enemy.alive) {
+        this.enemyPool.remove(enemy);
+      }
 
-    if(this.enemyPool.length === 0){
-      wave++;
-      this.startNewWave();
-    }
+      if (this.enemyPool.length === 0) {
+        wave++;
+        this.startNewWave();
+      }
 
       enemy.walk();
 
@@ -168,29 +183,31 @@ setupWeapons(){
   }
 
   startNewWave() {
-    numEnemys += wave* 5;
+    numEnemys += wave * 5;
     console.log(wave);
     console.log("wave 1 done");
     this.setupEnemies();
   }
 
   checkDistanceWithCamera(enemy) {
+    
+    
+    console.log(firstRender);
 
-    const cameraInitX = (this.camera.width - firstPlayerX)/2;
-    const cameraInitY = firstPlayerY - this.camera.height/2;
+    const cameraInitX = (this.camera.width - firstPlayerX) / 2;
+    const cameraInitY = firstPlayerY - this.camera.height / 2;
     // console.log(cameraInitX);
     // console.log(cameraInitY);
 
-
-  if(enemy.x > cameraInitX && enemy.x < cameraInitX + this.camera.width && enemy.y > cameraInitY && enemy.y < cameraInitY + this.camera.height && firstRender){
-     enemy.reset(this.game.rnd.integerInRange(30, this.background.width - 30), this.game.rnd.integerInRange(30, this.background.height - 30), 10);
+    if (enemy.x > cameraInitX && enemy.x < cameraInitX + this.camera.width && enemy.y > cameraInitY && enemy.y < cameraInitY + this.camera.height && firstRender) {
+      enemy.reset(this.game.rnd.integerInRange(30, this.background.width - 30), this.game.rnd.integerInRange(30, this.background.height - 30), 10);
       this.checkDistanceWithCamera(enemy);
-  }
+    }
 
-  if(enemy.x > this.camera.x && enemy.x < this.camera.x + this.camera.width && enemy.y > this.camera.y && enemy.y < this.camera.y + this.camera.height && !firstRender){
-     enemy.reset(this.game.rnd.integerInRange(30, this.background.width - 30), this.game.rnd.integerInRange(30, this.background.height - 30), 10);
+    if (enemy.x > this.camera.x && enemy.x < this.camera.x + this.camera.width && enemy.y > this.camera.y && enemy.y < this.camera.y + this.camera.height && !firstRender) {
+      enemy.reset(this.game.rnd.integerInRange(30, this.background.width - 30), this.game.rnd.integerInRange(30, this.background.height - 30), 10);
       this.checkDistanceWithCamera(enemy);
-  }
+    }
 
   }
 
@@ -205,15 +222,14 @@ setupWeapons(){
     this.physics.arcade.collide(this.enemyPool, this.wallGroup, this.changeEnemyDirection, null, this);
     this.physics.arcade.collide(this.enemyPool, this.mapObjectGroup, this.changeEnemyDirection, null, this);
 
-
     this.spawnEnemies();
     this.processPlayerInput();
     // console.log(this.enemyPool.length);
-    uzi.bullets.forEach(bullet =>{
+    uzi.bullets.forEach(bullet => {
       this.physics.arcade.overlap(bullet, this.wallGroup, this.bulletWallHandler, null, this);
       this.physics.arcade.overlap(bullet, this.enemyPool, this.calculateDamageEnemy, null, this);
     });
-    shotgun.bullets.forEach(bullet =>{
+    shotgun.bullets.forEach(bullet => {
       this.physics.arcade.overlap(bullet, this.wallGroup, this.bulletWallHandler, null, this);
       this.physics.arcade.overlap(bullet, this.enemyPool, this.calculateDamageEnemy, null, this);
     });
@@ -222,13 +238,13 @@ setupWeapons(){
 
   };
 
-  playerPickupHandler(player , weaponSprite) {
+  playerPickupHandler(player, weaponSprite) {
     // console.log(player.x);
     this.pickUpGroup.forEach(pickup => {
       // console.log(pickup);
-      if(Phaser.Math.distance(pickup.position.x, pickup.position.y, player.x, player.y) < 100){
+      if (Phaser.Math.distance(pickup.position.x, pickup.position.y, player.x, player.y) < 100) {
         // console.log(pickup.key);
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
+        if (this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
           weapon = pickup.key;
           weaponSprite.kill();
           console.log(weapon);
@@ -240,18 +256,17 @@ setupWeapons(){
 
   calculateDamageEnemy(bullet, enemy) {
     bullet.kill();
-    if(weapon === 'uzi'){
-    enemy.damage(3);
-  }
-  else if(weapon === 'shotgun'){
+    if (weapon === 'uzi') {
+      enemy.damage(3);
+    } else if (weapon === 'shotgun') {
       enemy.damage(10);
-  }
+    }
 
   }
 
   overlapHandler() {
-    player.x-=10;
-    player.y-=10;
+    player.x -= 10;
+    player.y -= 10;
   }
 
   collisionHandler() {
@@ -259,16 +274,16 @@ setupWeapons(){
   };
 
   changeEnemyDirection(enemy, object) {
-    if(enemy.enemyFolow){
-      if(enemy.x > object.x){
+    if (enemy.enemyFolow) {
+      if (enemy.x > object.x) {
         enemy.body.velocity.setTo(40, 0);
       }
     }
   }
 
   bulletWallHandler(bullet) {
-  bullet.kill();
-};
+    bullet.kill();
+  };
 
   enemyPlayerCollision() {
     player.damage(1);
@@ -288,18 +303,18 @@ setupWeapons(){
       }
     }
 
-  if (this.game.input.activePointer.isDown){
-    if(weapon != 'none'){
-      player.shoot(weapon);
+    if (this.game.input.activePointer.isDown) {
+      if (weapon != 'none') {
+        player.shoot(weapon);
 
-      if(weapon === 'uzi'){
-        uzi.fire();
+        if (weapon === 'uzi') {
+          uzi.fire();
+        }
+        if (weapon === 'shotgun') {
+          shotgun.fire();
+        }
       }
-      if(weapon === 'shotgun'){
-        shotgun.fire();
-      }
-    }
-  };
+    };
     // if (this.cursors.right.isDown) {
     //   player.shoot('gun');
     // }
@@ -325,6 +340,6 @@ setupWeapons(){
   }
 
   render() {
-     // this.game.debug.spriteInfo(player, 32, 32);
+    // this.game.debug.spriteInfo(player, 32, 32);
   }
 }

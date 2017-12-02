@@ -558,5 +558,21 @@
     "y": 1450,
     "picture": "axe"
   }
+],
+"opvul": [
+  {
+    "name": "linker boven opvulling",
+    "x" : 0,
+    "y": 0,
+    "width": 594,
+    "height": 211
+  },
+  {
+    "name": "midden boven opvulling",
+    "x" : 1006,
+    "y": 0,
+    "width": 500,
+    "height": 211
+  }   
 ]
 }

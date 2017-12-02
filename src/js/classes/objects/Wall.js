@@ -4,5 +4,6 @@ export default class Wall extends Phaser.TileSprite {
     this.game.physics.enable(this, Phaser.Physics.ARCADE);
     this.enableBody = true;
     this.body.immovable = true;
+    this.visible = true;
   }
 }
