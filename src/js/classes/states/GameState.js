@@ -8,6 +8,10 @@ let walls, mapObjects, pickUps;
 let numEnemys = 10;
 let shotgun, uzi;
 let weapon = 'uzi';
+let firstRender = true; 
+const firstPlayerX = 900;
+const firstPlayerY = 1060;
+
 
 export default class GameState extends Phaser.State {
   init() {
@@ -46,7 +50,7 @@ export default class GameState extends Phaser.State {
     this.setupBackground();
 
     // this.setupPlayer();
-    player = new Player(this.game, 900, 1068);
+    player = new Player(this.game, firstPlayerX, firstPlayerY);
     this.camera.follow(player);
     this.add.existing(player);
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -63,25 +67,21 @@ export default class GameState extends Phaser.State {
     this.setupEnemies();
     this.setupPickUps();
     this.setupWeapons();
-
   };
 
   setupEnemies() {
     for (let i = 0; i < numEnemys; i++) {
       let tempEnemy = i;
       tempEnemy = new Enemy(this.game, this.game.rnd.integerInRange(50, this.background.width - 50), this.game.rnd.integerInRange(50, this.background.height - 50));
-      this.checkDistanceWithPlayer(player, tempEnemy);
-      // console.log(Phaser.Math.distance(tempEnemy.x, tempEnemy.y, player.x, player.y));
+      this.checkDistanceWithCamera(tempEnemy);
       this.enemyPool.add(tempEnemy);
-      this.anotherCheck();
-
       this.checkEnemyWallOverlap();
-
+      if(i === numEnemys){
+        firstRender = false;
+      };
     }
-    // let enemyi = new Enemy(this.game, this.game.rnd.integerInRange(50, this.game.width - 50), this.game.rnd.integerInRange(50, this.game.height - 50));
-    //
-    // this.enemyPool.createMultiple(20, enemyi);
-    //
+    
+
 
   };
 
@@ -100,7 +100,6 @@ export default class GameState extends Phaser.State {
   setupMapObjects() {
     mapObjects.forEach(object => {
       object = new MapObject(this.game, object.x, object.y, object.width, object.height, object.picture);
-      // console.log(object);
       this.mapObjectGroup.add(object);
     })
   };
@@ -129,113 +128,132 @@ setupWeapons(){
     this.background = this.add.tileSprite(0, 0, 2351, 2134, 'map');
   };
 
-  enemyWallOverlap(player, enemy) {
-    // console.log(enemy);
+  enemyWallOverlap(object, enemy) {
     enemy.reset(this.game.rnd.integerInRange(50, this.background.width - 50), this.game.rnd.integerInRange(50, this.background.height - 50), 10);
-    this.checkDistanceWithPlayer(player, enemy);
+    this.checkDistanceWithCamera(enemy);
     this.checkEnemyWallOverlap();
-
   };
   
-  anotherCheck() {
-      
-      
-         this.enemyPool.forEach(enemy => {
-           console.log(enemy)
-
-           // this.checkDistanceWithPlayer(player, enemy);
-           if (Phaser.Math.distance(enemy.x, enemy.y, player.x, player.y) < 800){
-              enemy.reset(this.game.rnd.integerInRange(50, this.background.width - 50), this.game.rnd.integerInRange(50, this.background.height - 50), 10);
-                this.checkDistanceWithPlayer(player, enemy);
-     }
-         });
-    
-  }
-
-
   spawnEnemies() {
 
     this.enemyPool.forEach(enemy => {
 
-      // this.checkDistanceWithPlayer(player, enemy);
       if(enemy.alive && Phaser.Math.distance(enemy.x, enemy.y, player.x, player.y) < 400){
+      enemy.enemyFolow = true;
       let angle = this.game.physics.arcade.angleBetween(enemy, player);
       enemy.rotation = angle;
       this.game.physics.arcade.moveToObject(enemy, player, 200);
+      
     }
-      // console.log(Phaser.Math.distance(enemy.x, enemy.y, player.x, player.y));
+    
+    if(enemy.alive && Phaser.Math.distance(enemy.x, enemy.y, player.x, player.y) > 600) {
+      enemy.enemyFolow = false;
+      enemy.rotation = 90;
+      
+    }
+  
       enemy.walk();
-      // console.log(Phaser.Math.distance(enemy.x, enemy.y, player.x, player.y));
 
     });
   }
 
-  checkDistanceWithPlayer(player, enemy) {
-
-    if (Phaser.Math.distance(enemy.x, enemy.y, player.x, player.y) < 800) {
-       enemy.reset(this.game.rnd.integerInRange(50, this.background.width - 50), this.game.rnd.integerInRange(50, this.background.height - 50), 10);
-      this.checkDistanceWithPlayer(player, enemy);
-    }
-
+  checkDistanceWithCamera(enemy) {
+  
+    const cameraInitX = (this.camera.width - firstPlayerX)/2;
+    const cameraInitY = firstPlayerY - this.camera.height/2;
+    // console.log(cameraInitX);
+    // console.log(cameraInitY);
+    
+    console.log(enemy.x);
+    console.log(enemy.y);
+  
+  if(enemy.x > cameraInitX && enemy.x < cameraInitX + this.camera.width && enemy.y > cameraInitY && enemy.y < cameraInitY + this.camera.height && firstRender){
+     enemy.reset(this.game.rnd.integerInRange(30, this.background.width - 30), this.game.rnd.integerInRange(30, this.background.height - 30), 10);
+      this.checkDistanceWithCamera(enemy);
+  }
+  
+  if(enemy.x > this.camera.x && enemy.x < this.camera.x + this.camera.width && enemy.y > this.camera.y && enemy.y < this.camera.y + this.camera.height && !firstRender){
+     enemy.reset(this.game.rnd.integerInRange(30, this.background.width - 30), this.game.rnd.integerInRange(30, this.background.height - 30), 10);
+      this.checkDistanceWithCamera(enemy);
+  }
+  
   }
 
   update() {
     this.physics.arcade.collide(player, this.wallGroup, this.collisionHandler, null, this);
     this.physics.arcade.collide(player, this.mapObjectGroup, this.collisionHandler, null, this);
     this.physics.arcade.collide(player, this.enemyPool, this.enemyPlayerCollision, null, this);
+    this.physics.arcade.collide(this.enemyPool, this.wallGroup, this.changeEnemyDirection, null, this);
+    this.physics.arcade.collide(this.enemyPool, this.mapObjectGroup, this.changeEnemyDirection, null, this);
+    
 
     this.spawnEnemies();
     this.processPlayerInput();
     // console.log(this.enemyPool.length);
     uzi.bullets.forEach(bullet =>{
       this.physics.arcade.overlap(bullet, this.wallGroup, this.bulletWallHandler, null, this);
+      this.physics.arcade.overlap(bullet, this.enemyPool, this.calculateDamageEnemy, null, this);
     });
     shotgun.bullets.forEach(bullet =>{
       this.physics.arcade.overlap(bullet, this.wallGroup, this.bulletWallHandler, null, this);
+      this.physics.arcade.overlap(bullet, this.enemyPool, this.calculateDamageEnemy, null, this);
     });
 
     this.physics.arcade.overlap(player, this.pickUpGroup, this.playerPickupHandler, null, this);
-
-    // pickUps.forEach(pickup =>{
-      // console.log(pickup);
-      // this.physics.arcade.overlap(pickup, player, this.playerPickupHandler, null, this);
-  //   });
-
+  
   };
 
-  playerPickupHandler(player) {
+  playerPickupHandler(player , weaponSprite) {
     // console.log(player.x);
     this.pickUpGroup.forEach(pickup => {
       if(Phaser.Math.distance(pickup.position.x, pickup.position.y, player.x, player.y) < 60){
         // console.log(pickup.key);
         if(this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
           weapon = pickup.key;
+          weaponSprite.kill();
           console.log(weapon);
         }
       }
     });
 
-      // console.log(pickup);
-      // // if (this.cursors.down.isDown) {
-      // //   weapon = pickup.name;
-      // // };
   };
   
-
+  calculateDamageEnemy(bullet, enemy) {
+    bullet.kill();
+    if(weapon === 'uzi'){
+    enemy.damage(3);
+  }
+  else if(weapon === 'shotgun'){
+      enemy.damage(10);
+  }
+  
+  }
 
   collisionHandler() {
     console.log(`hit`);
   };
   
+  changeEnemyDirection(enemy, object) {
+  
+  
+    if(enemy.enemyFolow){
+      if(enemy.x > object.x){
+        enemy.body.velocity.setTo(40, 0);
+      }
+  
+    }
+  
+  
+  
+  }
+  
   bulletWallHandler(bullet) {
-  // console.log('bullet hit wall');
   bullet.kill();
 };
   
   enemyPlayerCollision() {
     player.damage(1);
     player.body.bounce.setTo(1.1);
-    console.log(player.health);
   }
 
   processPlayerInput() {
@@ -245,12 +263,9 @@ setupWeapons(){
     player.body.velocity.y = 0;
 
     if (this.cursors.up.isDown) {
-      // this.physics.arcade.moveToPointer(this.blackPlayer, player.data.speed);
-      // player.walk();
       if (distanceToPlayer > 10) {
         this.physics.arcade.moveToPointer(player, player.data.speed);
         player.walk();
-        // player.body.velocity.x = -player.data.speed;
       }
     }
 
@@ -293,3 +308,4 @@ setupWeapons(){
 
   render() {}
 }
+
