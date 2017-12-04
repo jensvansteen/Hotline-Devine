@@ -537,7 +537,40 @@
     "width": 24,
     "height": 21,
     "picture": "plant"
+  },
+  {
+    "name": "bossuwee kuislokaal - kast 1",
+    "x" : 632.9,
+    "y": 18.9,
+    "width": 132,
+    "height": 63,
+    "picture": "kast-medium-horizontal"
+  },
+  {
+    "name": "bossuwee kuislokaal - kast 2",
+    "x" : 830.1,
+    "y": 18.9,
+    "width": 132,
+    "height": 63,
+    "picture": "kast-medium-horizontal"
+  },
+  {
+    "name": "atelier 3 - kast 1",
+    "x" : 1427.2,
+    "y": 1424.8,
+    "width": 132,
+    "height": 63,
+    "picture": "kast-medium-horizontal"
+  },
+  {
+    "name": "atelier 3 kuislokaal - kast 1",
+    "x" : 2053.5,
+    "y": 2047.7,
+    "width": 264,
+    "height": 63,
+    "picture": "kast-medium-horizontal"
   }
+
 ],
 "pickups": [
   {
@@ -573,6 +606,20 @@
     "y": 0,
     "width": 500,
     "height": 211
-  }   
+  },
+  {
+    "name": "midden opvulling 1",
+    "x" : 1196.2,
+    "y": 836.8,
+    "width": 494.3,
+    "height": 570.4
+  },
+  {
+    "name": "midden opvulling 2",
+    "x" : 1689.9,
+    "y": 1270.9,
+    "width": 142.8,
+    "height": 135.5
+  }
 ]
 }
