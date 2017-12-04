@@ -14,8 +14,9 @@ let shotgun,
 let weapon = 'none';
 let firstRender;
 let wave = 1;
-const firstPlayerX = 900;
-const firstPlayerY = 1060;
+const firstPlayerX = 300;
+const firstPlayerY = 1860;
+let waveText, pointText, weaponInSlot, healthBar;
 
 export default class GameState extends Phaser.State {
   init() {
@@ -25,6 +26,8 @@ export default class GameState extends Phaser.State {
   preload() {
     console.log(`preload`);
     this.load.image('map', 'assets/map.png', 2351, 2134);
+    this.load.image('weapon-slot', 'assets/GUI/slot.png');
+    this.load.image('healthbar', 'assets/GUI/healthbar.png');
     this.load.image('wall-01', 'assets/wall-01.png');
     this.load.image('wall-02', 'assets/wall-02.png');
     this.load.json('objects', 'assets/json/map.json');
@@ -77,6 +80,7 @@ export default class GameState extends Phaser.State {
     this.setupEnemies();
     this.setupPickUps();
     this.setupWeapons();
+    this.setupGUI();
   };
 
   setupEnemies() {
@@ -100,7 +104,7 @@ export default class GameState extends Phaser.State {
       this.wallGroup.add(wall);
     })
   };
-  
+
   setupOpvul() {
     opvul.forEach(vlak => {
       vlak = new Wall(this.game, vlak.x, vlak.y, vlak.width, vlak.height, vlak.type);
@@ -140,6 +144,21 @@ export default class GameState extends Phaser.State {
     uzi.bulletSpeed = 800;
     uzi.fireRate = 100;
     uzi.trackSprite(player, 30, -5, true);
+  };
+
+  setupGUI() {
+    waveText = this.game.add.text(1265, 580 , "1", { font: "40px Arial", fill: "white"});
+    pointText = this.game.add.text(1200, 620 , "0000", { font: "40px Arial", fill: "white" });
+    waveText.fixedToCamera = true;
+    pointText.fixedToCamera = true;
+
+    healthBar = this.game.add.tileSprite(1000,680, player.health*3, 35, 'healthbar');
+    healthBar.fixedToCamera = true;
+
+    let weaponSlot = this.game.add.image(80, 660, 'weapon-slot');
+    weaponSlot.anchor.setTo(0.5, 0.5);
+    weaponSlot.fixedToCamera = true;
+
   };
 
   setupBackground() {
@@ -205,6 +224,7 @@ export default class GameState extends Phaser.State {
 
       if (this.enemyPool.length === 0) {
         wave++;
+        waveText.text = wave;
         this.startNewWave();
       }
       
@@ -241,6 +261,7 @@ export default class GameState extends Phaser.State {
   }
 
   update() {
+
     this.physics.arcade.collide(player, this.wallGroup, this.collisionHandler, null, this);
     this.physics.arcade.overlap(player, this.wallGroup, this.overlapHandler, null, this);
     this.physics.arcade.collide(this.enemyPool, this.enemyPool, this.enemysCollide, null, this);
@@ -279,6 +300,15 @@ export default class GameState extends Phaser.State {
         if (this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
           weapon = pickup.key;
           weaponSprite.kill();
+          if(weapon != 'none'){
+            if(weaponInSlot){
+              weaponInSlot.kill();
+            }
+            weaponInSlot = this.game.add.image(80, 660, weapon);
+            weaponInSlot.anchor.setTo(0.5, 0.5);
+            weaponInSlot.scale.setTo(1.5, 1.5);
+            weaponInSlot.fixedToCamera = true;
+          }
           console.log(weapon);
         }
       }
@@ -303,6 +333,7 @@ export default class GameState extends Phaser.State {
   }
 
   collisionHandler() {
+    //hit met wall of object op de map
     // console.log(`hit`);
   };
   
@@ -336,6 +367,7 @@ enemysCollide(enemy1, enemy2) {
 
   enemyPlayerCollision() {
     player.damage(1);
+    healthBar.width = player.health;
     player.body.bounce.setTo(1.1);
   };
   
@@ -372,7 +404,7 @@ enemysCollide(enemy1, enemy2) {
     }
 
     if (this.game.input.activePointer.isDown) {
-      if (weapon != 'none') {
+      if (weapon != 'none' && player.alive) {
         player.shoot(weapon);
 
         if (weapon === 'uzi') {

@@ -8,7 +8,7 @@ export default class GameState extends Phaser.State {
   preload() {
     console.log(`preload`);
     this.load.image('startScreen', 'assets/start-screen.jpg');
-    this.load.image('button', 'assets/buttons/start-button.png', 433, 122);
+    this.load.image('button', 'assets/GUI/start-button.png', 433, 122);
     this.load.audio('soundtrack', 'assets/sounds/soundtrack.mp3');
   }
 
