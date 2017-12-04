@@ -16,7 +16,7 @@ let firstRender;
 let wave = 1;
 const firstPlayerX = 300;
 const firstPlayerY = 1860;
-let waveText, pointText, weaponInSlot, healthBar;
+let waveText, pointText, enemyText, weaponInSlot, healthBar;
 
 export default class GameState extends Phaser.State {
   init() {
@@ -147,8 +147,10 @@ export default class GameState extends Phaser.State {
   setupGUI() {
     waveText = this.game.add.text(1265, 580 , "1", { font: "40px Arial", fill: "white"});
     pointText = this.game.add.text(1200, 620 , "0000", { font: "40px Arial", fill: "white" });
+    enemyText = this.game.add.text(100, 100 , `${this.enemyPool.length}/${numEnemys}`, { font: "40px Arial", fill: "white" });
     waveText.fixedToCamera = true;
     pointText.fixedToCamera = true;
+    enemyText.fixedToCamera = true;
 
     healthBar = this.game.add.tileSprite(1000,680, player.health*3, 35, 'healthbar');
     healthBar.fixedToCamera = true;
@@ -189,6 +191,7 @@ export default class GameState extends Phaser.State {
 
       if (!enemy.alive) {
         this.enemyPool.remove(enemy);
+        enemyText.text = `${this.enemyPool.length}/${numEnemys}`;
       }
 
       if (this.enemyPool.length === 0) {
@@ -206,6 +209,7 @@ export default class GameState extends Phaser.State {
     numEnemys += wave * 5;
     console.log(wave);
     this.setupEnemies();
+    enemyText.text = `${this.enemyPool.length}/${numEnemys}`;
   }
 
   checkDistanceWithCamera(enemy) {
@@ -213,8 +217,8 @@ export default class GameState extends Phaser.State {
 
     console.log(firstRender);
 
-    const cameraInitX = (this.camera.width - firstPlayerX) / 2;
-    const cameraInitY = firstPlayerY - this.camera.height / 2;
+    const cameraInitX = (this.camera.width - firstPlayerX) / 3;
+    const cameraInitY = firstPlayerY - this.camera.height / 3;
     // console.log(cameraInitX);
     // console.log(cameraInitY);
 
@@ -317,7 +321,7 @@ export default class GameState extends Phaser.State {
   };
 
   enemyPlayerCollision() {
-    player.damage(1);
+    // player.damage(1);
     healthBar.width = player.health;
     player.body.bounce.setTo(1.1);
 
