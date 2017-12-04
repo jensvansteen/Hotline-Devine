@@ -153,7 +153,7 @@ export default class GameState extends Phaser.State {
     healthBar = this.game.add.tileSprite(1000,680, player.health*3, 35, 'healthbar');
     healthBar.fixedToCamera = true;
 
-    let weaponSlot = this.game.add.image(50, 660, 'weapon-slot');
+    let weaponSlot = this.game.add.image(80, 660, 'weapon-slot');
     weaponSlot.anchor.setTo(0.5, 0.5);
     weaponSlot.fixedToCamera = true;
 
@@ -271,7 +271,7 @@ export default class GameState extends Phaser.State {
             if(weaponInSlot){
               weaponInSlot.kill();
             }
-            weaponInSlot = this.game.add.image(60, 660, weapon);
+            weaponInSlot = this.game.add.image(80, 660, weapon);
             weaponInSlot.anchor.setTo(0.5, 0.5);
             weaponInSlot.scale.setTo(1.5, 1.5);
             weaponInSlot.fixedToCamera = true;
@@ -296,6 +296,7 @@ export default class GameState extends Phaser.State {
   overlapHandler() {
     // player.x -= 10;
     // player.y -= 10;
+    player.body.bounce.setTo(1.1);
   }
 
   collisionHandler() {
