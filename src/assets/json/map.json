@@ -569,6 +569,14 @@
     "width": 264,
     "height": 63,
     "picture": "kast-medium-horizontal"
+  },
+  {
+    "name": "lift",
+    "x" : 1833.8,
+    "y": 694.4,
+    "width": 165.6,
+    "height": 80,
+    "picture": "elevator"
   }
 
 ],
@@ -598,28 +606,133 @@
     "x" : 0,
     "y": 0,
     "width": 594,
-    "height": 211
+    "height": 211,
+    "type": "wall-03"
   },
   {
     "name": "midden boven opvulling",
     "x" : 1006,
     "y": 0,
     "width": 500,
-    "height": 211
+    "height": 211,
+    "type": "wall-03"
   },
   {
     "name": "midden opvulling 1",
     "x" : 1196.2,
     "y": 836.8,
     "width": 494.3,
-    "height": 570.4
+    "height": 570.4,
+    "type": "wall-03"
   },
   {
     "name": "midden opvulling 2",
     "x" : 1689.9,
     "y": 1270.9,
     "width": 142.8,
-    "height": 135.5
+    "height": 135.5,
+    "type": "wall-03"
+  }
+],
+"rooms": [
+  {
+    "name": "bovenste kotje",
+    "x": 0,
+    "y": 0,
+    "width": 987.5,
+    "height": 211.5,
+    "picture": "wall-03",
+    "id" : 1  
+  },
+  {
+    "name": "bossuwee",
+    "x": 0,
+    "y": 229.5,
+    "width": 987.5,
+    "height": 465,
+    "picture": "wall-03",
+    "id" : 2  
+  },
+  {
+    "name": "atelier 1",
+    "x": 1005.5,
+    "y": 0,
+    "width": 1327,
+    "height": 676.5,
+    "picture": "wall-03",
+    "id" : 3  
+  },
+  {
+    "name": "onthaal",
+    "x": 0,
+    "y": 694.5,
+    "width": 1833.8,
+    "height": 712.5,
+    "picture": "wall-03",
+    "id" : 4  
+  },
+  {
+    "name": "lift kamer",
+    "x": 1851.8,
+    "y": 694.5,
+    "width": 480.6,
+    "height": 348.5,
+    "picture": "wall-03",
+    "id" : 5  
+  },
+  {
+    "name": "kamer onder lift kamer",
+    "x": 1851.8,
+    "y": 1061,
+    "width": 480.6,
+    "height": 346,
+    "picture": "wall-03",
+    "id" : 6  
+  },
+  {
+    "name": "docenten lokaal",
+    "x": 0,
+    "y": 1425,
+    "width": 563,
+    "height": 689.4,
+    "picture": "wall-03",
+    "id" : 7  
+  },
+  {
+    "name": "atelier 2",
+    "x": 581,
+    "y": 1425,
+    "width": 792,
+    "height": 689.4,
+    "picture": "wall-03",
+    "id" : 8  
+  },
+  {
+    "name": "atelier 3-1",
+    "x": 1391,
+    "y": 1425,
+    "width": 639,
+    "height": 689.4,
+    "picture": "wall-03",
+    "id" : 9  
+  },
+  {
+    "name": "atelier 3-2",
+    "x": 2030,
+    "y": 1425,
+    "width": 302.4,
+    "height": 290.5,
+    "picture": "wall-03",
+    "id" : 9  
+  },
+  {
+    "name": "onderhoudskotje bij atelier 3",
+    "x": 2048,
+    "y": 1733.5,
+    "width": 284.4,
+    "height": 381,
+    "picture": "wall-03",
+    "id" : 10  
   }
 ]
 }
