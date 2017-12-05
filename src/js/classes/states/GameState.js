@@ -7,7 +7,8 @@ let player;
 let walls,
   mapObjects,
   pickUps,
-  opvul;
+  opvul,
+  rooms;
 let numEnemys = 10;
 let shotgun,
   uzi;
@@ -34,6 +35,7 @@ export default class GameState extends Phaser.State {
     this.load.image('healthbar', 'assets/GUI/healthbar.png');
     this.load.image('wall-01', 'assets/wall-01.png');
     this.load.image('wall-02', 'assets/wall-02.png');
+    this.load.image('wall-03', 'assets/wall-03.png');
     this.load.json('objects', 'assets/json/map.json');
     this.load.image('wood-table-horizontal', 'assets/objects/wood-table-horizontal.png');
     this.load.image('wood-table-vertical', 'assets/objects/wood-table-vertical.png');
@@ -47,35 +49,43 @@ export default class GameState extends Phaser.State {
     this.load.image('kast-medium-horizontal', 'assets/objects/kast-medium-horizontal.png');
     this.load.image('stair-01', 'assets/objects/stairs-01.png');
     this.load.image('stair-02', 'assets/objects/stairs-02.png');
+    this.load.image('elevator', 'assets/objects/elevator-01.png');
     this.load.image('macbook-horizontal', 'assets/objects/macbook-horizontal.png');
     this.load.image('plant', 'assets/objects/plant.png');
     this.load.image('bullet', 'assets/bullet.png');
     this.load.image('shotgun', 'assets/pickups/shotgun.png');
     this.load.image('uzi', 'assets/pickups/uzi.png');
     this.load.image('axe', 'assets/pickups/axe.png');
+    this.load.image('dead', 'assets/dead.png');
     this.load.atlasJSONHash('player', 'assets/json/components.png', 'assets/json/components.json');
   }
 
   create() {
     this.world.setBounds(0, 0, 2351, 2134);
 
+    let tempObjects = this.game.cache.getJSON('objects');
+    walls = Array.from(tempObjects.walls);
+    mapObjects = Array.from(tempObjects.objects);
+    pickUps = Array.from(tempObjects.pickups);
+    opvul = Array.from(tempObjects.opvul);
+    rooms = Array.from(tempObjects.rooms);
+
     firstRender = true;
+
+    // this.setupRooms();
+    this.roomGroup = this.add.group();
     this.setupBackground();
+    this.setupRooms();
     this.wallGroup = this.add.group();
     this.opvulGroup = this.add.group();
     this.mapObjectGroup = this.add.group();
     this.pickUpGroup = this.add.group();
     this.enemyPool = this.add.group();
     this.deadEnemies = this.add.group();
-    let tempObjects = this.game.cache.getJSON('objects');
-    walls = Array.from(tempObjects.walls);
-    mapObjects = Array.from(tempObjects.objects);
-    pickUps = Array.from(tempObjects.pickups);
-    opvul = Array.from(tempObjects.opvul);
+
     this.setupWalls();
     this.setupMapObjects();
     this.setupOpvul();
-
     player = new Player(this.game, firstPlayerX, firstPlayerY);
     this.camera.follow(player);
     this.add.existing(player);
@@ -102,6 +112,15 @@ export default class GameState extends Phaser.State {
 
   };
 
+  setupRooms() {
+    rooms.forEach(room => {
+    let newRoom = new MapObject(this.game, room.x, room.y, room.width, room.height, room.picture);
+    newRoom.id = room.id;
+    console.log(newRoom.id);
+    this.roomGroup.add(newRoom);
+    })
+  };
+
   setupWalls() {
     walls.forEach(wall => {
       wall = new Wall(this.game, wall.x, wall.y, wall.width, wall.height, wall.type);
@@ -112,9 +131,7 @@ export default class GameState extends Phaser.State {
   setupOpvul() {
     opvul.forEach(vlak => {
       vlak = new Wall(this.game, vlak.x, vlak.y, vlak.width, vlak.height, vlak.type);
-      vlak.visible = false;
       this.opvulGroup.add(vlak);
-      // console.log(this.opvulGroup);
     })
   }
 
@@ -208,7 +225,7 @@ export default class GameState extends Phaser.State {
 
       this.compareRoomsEnemyPlayer(enemy);
 
-      if (enemy.alive && player.alive && Phaser.Math.distance(enemy.x, enemy.y, player.x, player.y) < 300) {
+      if (enemy.roomId === player.roomId && enemy.alive && player.alive && Phaser.Math.distance(enemy.x, enemy.y, player.x, player.y) < 300) {
         enemy.enemyFolow = true;
         let angle = this.game.physics.arcade.angleBetween(enemy, player);
         enemy.rotation = angle;
@@ -228,6 +245,8 @@ export default class GameState extends Phaser.State {
       }
 
       if (!enemy.alive) {
+        let deadEnemy = this.game.add.image(enemy.x, enemy.y, 'dead');
+        this.deadEnemies.add(deadEnemy);
         this.enemyPool.remove(enemy);
         pointText.text = `${points+=this.game.math.between(10,30)} `;
         enemyText.text = `${this.enemyPool.length}/${numEnemys} `;
@@ -236,6 +255,7 @@ export default class GameState extends Phaser.State {
       if (this.enemyPool.length === 0) {
         wave++;
         waveText.text = `${wave} `;
+        this.deadEnemies.removeAll(true);
         this.startNewWave();
       }
 
@@ -253,10 +273,8 @@ export default class GameState extends Phaser.State {
 
   checkDistanceWithCamera(enemy) {
 
-    const cameraInitX = (this.camera.width - firstPlayerX) / 2;
-    const cameraInitY = firstPlayerY - this.camera.height / 2;
-    // console.log(cameraInitX);
-    // console.log(cameraInitY);
+    const cameraInitX = 0;
+    const cameraInitY = this.background.height - this.camera.height;
 
     if (enemy.x > cameraInitX && enemy.x < cameraInitX + this.camera.width && enemy.y > cameraInitY && enemy.y < cameraInitY + this.camera.height && firstRender) {
       enemy.reset(this.game.rnd.integerInRange(30, this.background.width - 30), this.game.rnd.integerInRange(30, this.background.height - 30), 10);
@@ -275,6 +293,8 @@ export default class GameState extends Phaser.State {
     this.physics.arcade.collide(player, this.wallGroup, this.collisionHandler, null, this);
     this.physics.arcade.overlap(player, this.wallGroup, this.overlapHandler, null, this);
     this.physics.arcade.collide(this.enemyPool, this.enemyPool, this.enemysCollide, null, this);
+    this.physics.arcade.overlap(player, this.roomGroup, this.logRoom, null, this);
+
 
     this.physics.arcade.collide(player, this.mapObjectGroup, this.collisionHandler, null, this);
     this.physics.arcade.overlap(player, this.mapObjectGroup, this.overlapHandler, null, this);
@@ -283,7 +303,7 @@ export default class GameState extends Phaser.State {
     this.physics.arcade.collide(player, this.enemyPool, this.enemyPlayerCollision, null, this);
     this.physics.arcade.collide(this.enemyPool, this.mapObjectGroup, this.changeEnemyDirection, null, this);
     this.physics.arcade.collide(this.enemyPool, this.wallGroup, this.changeEnemyDirection, null, this);
-
+    this.physics.arcade.overlap(this.enemyPool, this.roomGroup, this.logRoomEnemy, null, this);
 
     this.spawnEnemies();
     this.processPlayerInput();
@@ -298,6 +318,7 @@ export default class GameState extends Phaser.State {
     });
 
     this.physics.arcade.overlap(player, this.pickUpGroup, this.playerPickupHandler, null, this);
+
 
   };
 
@@ -335,6 +356,20 @@ export default class GameState extends Phaser.State {
       enemy.damage(10);
     }
 
+  }
+
+  logRoom(player, room) {
+    // console.log('true');
+    // console.log(room);
+    // console.log(room.id);
+    player.roomId = room.id;
+  }
+
+  logRoomEnemy(enemy,room){
+    // console.log(enemy);
+    // console.log(room);
+
+    enemy.roomId = room.id;
   }
 
   overlapHandler() {
