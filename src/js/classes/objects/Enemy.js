@@ -15,8 +15,7 @@ export default class Enemy extends Phaser.Sprite {
   }
 
   walk(){
-    this.animations.play('walk');
+    const walk = this.animations.play('walk');
   }
-  
-}
 
+}

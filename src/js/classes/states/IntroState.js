@@ -9,14 +9,13 @@ export default class IntroState extends Phaser.State {
     console.log(`preload`);
     this.load.image('startScreen', 'assets/start-screen.jpg');
     this.load.image('start-button', 'assets/GUI/start-button.png', 433, 122);
-    this.load.audio('soundtrack', 'assets/sounds/soundtrack.mp3');
-    
+    this.load.audio('soundtrack', 'assets/sounds/its-safe-now.mp3');
+
   }
 
   create() {
-    let music = this.add.audio('soundtrack', 1,true);
-    // music.play();
-    music.volume = 0.1;
+    let music = this.add.audio('soundtrack', 0.1,true);
+    music.play();
     this.background = this.add.tileSprite(0, 0, this.game.width, this.game.height, 'startScreen');
     this.cursors = this.input.keyboard.createCursorKeys();
 

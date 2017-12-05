@@ -7,6 +7,7 @@ export default class Player extends Phaser.Sprite {
     this.scale.setTo(2, 2);
     this.health = 100;
     this.game.physics.enable(this, Phaser.Physics.ARCADE);
+
     // this.game.physics.arcade.enableBody(this);
     this.body.collideWorldBounds = true;
     this.animations.add('stand', ['1.png'], 10, true, true);

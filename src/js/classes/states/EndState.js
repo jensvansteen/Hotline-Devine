@@ -11,7 +11,6 @@ export default class EndState extends Phaser.State {
     // this.load.bitmapFont('justice', 'assets/fonts/justice/justice.png', 'assets/fonts/justice/justice.fnt');
     this.load.image('endScreen', 'assets/end-screen.jpg');
     this.load.image('restart-button', 'assets/GUI/restart-button.png', 433, 122);
-    this.load.audio('soundtrack', 'assets/sounds/soundtrack.mp3');
 
     points = localStorage.getItem('points');
     waves = localStorage.getItem('waves');
@@ -19,10 +18,6 @@ export default class EndState extends Phaser.State {
 
   create() {
     this.world.setBounds(0, 0, 1366, 768);
-
-    let music = this.add.audio('soundtrack', 1,true);
-    // music.play();
-    music.volume = 0.1;
 
     this.background = this.add.tileSprite(0, 0, this.game.width, this.game.height, 'endScreen');
     this.cursors = this.input.keyboard.createCursorKeys();
