@@ -17,6 +17,7 @@ let wave = 1;
 const firstPlayerX = 300;
 const firstPlayerY = 1860;
 let waveText, pointText, enemyText, weaponInSlot, healthBar;
+let points = 0;
 
 export default class GameState extends Phaser.State {
   init() {
@@ -145,14 +146,14 @@ export default class GameState extends Phaser.State {
   };
 
   setupGUI() {
-    waveText = this.game.add.text(1265, 580 , "1", { font: "40px Arial", fill: "white"});
-    pointText = this.game.add.text(1200, 620 , "0000", { font: "40px Arial", fill: "white" });
-    enemyText = this.game.add.text(100, 100 , `${this.enemyPool.length}/${numEnemys}`, { font: "40px Arial", fill: "white" });
+    waveText = this.game.add.text(1315, 580 , "1", { font: "40px Arial", fill: "white"});
+    pointText = this.game.add.text(1250, 620 , "0000", { font: "40px Arial", fill: "white" });
+    enemyText = this.game.add.text(10, 10 , `${this.enemyPool.length}/${numEnemys}`, { font: "40px Arial", fill: "white" });
     waveText.fixedToCamera = true;
     pointText.fixedToCamera = true;
     enemyText.fixedToCamera = true;
 
-    healthBar = this.game.add.tileSprite(1000,680, player.health*3, 35, 'healthbar');
+    healthBar = this.game.add.tileSprite(1040,680, player.health*3, 35, 'healthbar');
     healthBar.fixedToCamera = true;
 
     let weaponSlot = this.game.add.image(80, 660, 'weapon-slot');
@@ -179,7 +180,7 @@ export default class GameState extends Phaser.State {
         enemy.enemyFolow = true;
         let angle = this.game.physics.arcade.angleBetween(enemy, player);
         enemy.rotation = angle;
-        this.game.physics.arcade.moveToObject(enemy, player, 200);
+        this.game.physics.arcade.moveToObject(enemy, player, 150);
 
       }
 
@@ -191,6 +192,7 @@ export default class GameState extends Phaser.State {
 
       if (!enemy.alive) {
         this.enemyPool.remove(enemy);
+        pointText.text = `${points+=this.game.math.between(10,30)} `;
         enemyText.text = `${this.enemyPool.length}/${numEnemys}`;
       }
 
@@ -217,8 +219,8 @@ export default class GameState extends Phaser.State {
 
     console.log(firstRender);
 
-    const cameraInitX = (this.camera.width - firstPlayerX) / 3;
-    const cameraInitY = firstPlayerY - this.camera.height / 3;
+    const cameraInitX = (this.camera.width - firstPlayerX) / 2;
+    const cameraInitY = firstPlayerY - this.camera.height / 2;
     // console.log(cameraInitX);
     // console.log(cameraInitY);
 
@@ -271,6 +273,7 @@ export default class GameState extends Phaser.State {
         if (this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
           weapon = pickup.key;
           weaponSprite.kill();
+          
           if(weapon != 'none'){
             if(weaponInSlot){
               weaponInSlot.kill();
@@ -280,7 +283,6 @@ export default class GameState extends Phaser.State {
             weaponInSlot.scale.setTo(1.5, 1.5);
             weaponInSlot.fixedToCamera = true;
           }
-          console.log(weapon);
         }
       }
     });
@@ -300,7 +302,7 @@ export default class GameState extends Phaser.State {
   overlapHandler() {
     // player.x -= 10;
     // player.y -= 10;
-    player.body.bounce.setTo(1.1);
+
   }
 
   collisionHandler() {
@@ -321,13 +323,15 @@ export default class GameState extends Phaser.State {
   };
 
   enemyPlayerCollision() {
-    // player.damage(1);
-    healthBar.width = player.health;
-    player.body.bounce.setTo(1.1);
 
-    if(!player.alive){
-      this.state.start(`Game`);
-    }
+      player.damage(1);
+      healthBar.width = player.health;
+      player.body.bounce.setTo(1.1);
+
+
+    // if(!player.alive){
+      // this.state.start(`End`);
+    // }
   }
 
   processPlayerInput() {
