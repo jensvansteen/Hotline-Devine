@@ -1,3 +1,4 @@
+
 export default class Enemy extends Phaser.Sprite {
   constructor(game, x, y, frames) {
     super(game, x, y, 'player');
@@ -16,5 +17,6 @@ export default class Enemy extends Phaser.Sprite {
   walk(){
     this.animations.play('walk');
   }
-
+  
 }
+

@@ -1,6 +1,6 @@
 import Button from '../objects/Button';
 
-export default class GameState extends Phaser.State {
+export default class IntroState extends Phaser.State {
   init() {
     console.log(`init`);
   }
@@ -8,8 +8,9 @@ export default class GameState extends Phaser.State {
   preload() {
     console.log(`preload`);
     this.load.image('startScreen', 'assets/start-screen.jpg');
-    this.load.image('button', 'assets/GUI/start-button.png', 433, 122);
+    this.load.image('start-button', 'assets/GUI/start-button.png', 433, 122);
     this.load.audio('soundtrack', 'assets/sounds/soundtrack.mp3');
+    
   }
 
   create() {
@@ -20,7 +21,7 @@ export default class GameState extends Phaser.State {
     this.cursors = this.input.keyboard.createCursorKeys();
 
 
-    const startButton = new Button(this.game, this.world.centerX, 697, this.startTheGame, this);
+    const startButton = new Button(this.game, this.world.centerX, 697, 'start-button', this.startTheGame, this);
     startButton.onInputOver.add(this.over, this);
     startButton.onInputOut.add(this.out, this);
     this.add.existing(startButton);

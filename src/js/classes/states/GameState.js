@@ -22,10 +22,13 @@ let points = 0;
 export default class GameState extends Phaser.State {
   init() {
     console.log(`init`);
+    localStorage.removeItem('points');
+    localStorage.removeItem('waves');
   }
 
   preload() {
     console.log(`preload`);
+    this.load.bitmapFont('justice', 'assets/fonts/justice/justice.png', 'assets/fonts/justice/justice.fnt');
     this.load.image('map', 'assets/map.png', 2351, 2134);
     this.load.image('weapon-slot', 'assets/GUI/slot.png');
     this.load.image('healthbar', 'assets/GUI/healthbar.png');
@@ -63,6 +66,7 @@ export default class GameState extends Phaser.State {
     this.mapObjectGroup = this.add.group();
     this.pickUpGroup = this.add.group();
     this.enemyPool = this.add.group();
+    this.deadEnemies = this.add.group();
     let tempObjects = this.game.cache.getJSON('objects');
     walls = Array.from(tempObjects.walls);
     mapObjects = Array.from(tempObjects.objects);
@@ -88,8 +92,9 @@ export default class GameState extends Phaser.State {
       let tempEnemy = i;
       tempEnemy = new Enemy(this.game, this.game.rnd.integerInRange(50, this.background.width - 50), this.game.rnd.integerInRange(50, this.background.height - 50));
       this.checkDistanceWithCamera(tempEnemy);
-      this.enemyPool.add(tempEnemy);
+      this.initDirectionEnemy(tempEnemy);
       this.checkEnemyWallOverlap();
+      this.enemyPool.add(tempEnemy);
       if (i === numEnemys-1) {
         firstRender = false;
       };
@@ -109,7 +114,7 @@ export default class GameState extends Phaser.State {
       vlak = new Wall(this.game, vlak.x, vlak.y, vlak.width, vlak.height, vlak.type);
       vlak.visible = false;
       this.opvulGroup.add(vlak);
-      console.log(this.opvulGroup);
+      // console.log(this.opvulGroup);
     })
   }
 
@@ -146,9 +151,12 @@ export default class GameState extends Phaser.State {
   };
 
   setupGUI() {
-    waveText = this.game.add.text(1315, 580 , "1", { font: "40px Arial", fill: "white"});
-    pointText = this.game.add.text(1250, 620 , "0000", { font: "40px Arial", fill: "white" });
-    enemyText = this.game.add.text(10, 10 , `${this.enemyPool.length}/${numEnemys}`, { font: "40px Arial", fill: "white" });
+
+    waveText = this.add.text(this.camera.width-50, 580 , "1 ", { font: "80px justice", fill: "white", boundsAlignH: "right", boundsAlignV: "middle"});
+    waveText.setTextBounds(0, 0, 0, 0);
+    pointText = this.add.text(this.camera.width-50, 640 , "0 ", { font: "60px justice", fill: "white", boundsAlignH: "right", boundsAlignV: "middle" });
+    pointText.setTextBounds(0, 0, 0, 0);
+    enemyText = this.add.text(10, 5 , `${this.enemyPool.length}/${numEnemys} `, { font: "60px justice", fill: "white" });
     waveText.fixedToCamera = true;
     pointText.fixedToCamera = true;
     enemyText.fixedToCamera = true;
@@ -156,7 +164,7 @@ export default class GameState extends Phaser.State {
     healthBar = this.game.add.tileSprite(1040,680, player.health*3, 35, 'healthbar');
     healthBar.fixedToCamera = true;
 
-    let weaponSlot = this.game.add.image(80, 660, 'weapon-slot');
+    let weaponSlot = this.game.add.image(80, 680, 'weapon-slot');
     weaponSlot.anchor.setTo(0.5, 0.5);
     weaponSlot.fixedToCamera = true;
 
@@ -166,39 +174,68 @@ export default class GameState extends Phaser.State {
     this.background = this.add.tileSprite(0, 0, 2351, 2134, 'map');
   };
 
+  initDirectionEnemy(enemy) {
+    let direction = this.game.rnd.integerInRange(1, 4);
+    if(direction === 1){
+      enemy.angle = 90;
+    }
+    if(direction === 2){
+      enemy.angle = 180;
+    }
+    if(direction === 3){
+      enemy.angle = 270;
+    }
+    if(direction === 4) {
+      enemy.angle = 0;
+    }
+  }
+
   enemyWallOverlap(object, enemy) {
     enemy.reset(this.game.rnd.integerInRange(50, this.background.width - 50), this.game.rnd.integerInRange(50, this.background.height - 50), 10);
     this.checkDistanceWithCamera(enemy);
     this.checkEnemyWallOverlap();
   };
 
+  compareRoomsEnemyPlayer(enemy){
+
+
+  }
+
   spawnEnemies() {
 
     this.enemyPool.forEach(enemy => {
 
-      if (enemy.alive && Phaser.Math.distance(enemy.x, enemy.y, player.x, player.y) < 400) {
+
+      this.compareRoomsEnemyPlayer(enemy);
+
+      if (enemy.alive && player.alive && Phaser.Math.distance(enemy.x, enemy.y, player.x, player.y) < 300) {
         enemy.enemyFolow = true;
         let angle = this.game.physics.arcade.angleBetween(enemy, player);
         enemy.rotation = angle;
         this.game.physics.arcade.moveToObject(enemy, player, 150);
 
+
       }
 
-      if (enemy.alive && Phaser.Math.distance(enemy.x, enemy.y, player.x, player.y) > 600) {
+      if (enemy.alive && player.alive && enemy.enemyFolow && Phaser.Math.distance(enemy.x, enemy.y, player.x, player.y) > 600|| !player.alive || !enemy.enemyFolow) {
         enemy.enemyFolow = false;
-        enemy.rotation = 90;
+        this.followNormalWalkingCycle(enemy);
 
+      }
+
+      if(enemy.angle !== 0 && enemy.angle !== 90 && enemy.angle !== -180 && enemy.angle !== -90 && !enemy.enemyFolow){
+          this.initDirectionEnemy(enemy);
       }
 
       if (!enemy.alive) {
         this.enemyPool.remove(enemy);
         pointText.text = `${points+=this.game.math.between(10,30)} `;
-        enemyText.text = `${this.enemyPool.length}/${numEnemys}`;
+        enemyText.text = `${this.enemyPool.length}/${numEnemys} `;
       }
 
       if (this.enemyPool.length === 0) {
         wave++;
-        waveText.text = wave;
+        waveText.text = `${wave} `;
         this.startNewWave();
       }
 
@@ -211,13 +248,10 @@ export default class GameState extends Phaser.State {
     numEnemys += wave * 5;
     console.log(wave);
     this.setupEnemies();
-    enemyText.text = `${this.enemyPool.length}/${numEnemys}`;
+    enemyText.text = `${this.enemyPool.length}/${numEnemys} `;
   }
 
   checkDistanceWithCamera(enemy) {
-
-
-    console.log(firstRender);
 
     const cameraInitX = (this.camera.width - firstPlayerX) / 2;
     const cameraInitY = firstPlayerY - this.camera.height / 2;
@@ -237,16 +271,19 @@ export default class GameState extends Phaser.State {
   }
 
   update() {
-
+    console.log(waveText.text);
     this.physics.arcade.collide(player, this.wallGroup, this.collisionHandler, null, this);
     this.physics.arcade.overlap(player, this.wallGroup, this.overlapHandler, null, this);
+    this.physics.arcade.collide(this.enemyPool, this.enemyPool, this.enemysCollide, null, this);
 
     this.physics.arcade.collide(player, this.mapObjectGroup, this.collisionHandler, null, this);
     this.physics.arcade.overlap(player, this.mapObjectGroup, this.overlapHandler, null, this);
 
+
     this.physics.arcade.collide(player, this.enemyPool, this.enemyPlayerCollision, null, this);
-    this.physics.arcade.collide(this.enemyPool, this.wallGroup, this.changeEnemyDirection, null, this);
     this.physics.arcade.collide(this.enemyPool, this.mapObjectGroup, this.changeEnemyDirection, null, this);
+    this.physics.arcade.collide(this.enemyPool, this.wallGroup, this.changeEnemyDirection, null, this);
+
 
     this.spawnEnemies();
     this.processPlayerInput();
@@ -273,12 +310,12 @@ export default class GameState extends Phaser.State {
         if (this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
           weapon = pickup.key;
           weaponSprite.kill();
-          
+
           if(weapon != 'none'){
             if(weaponInSlot){
               weaponInSlot.kill();
             }
-            weaponInSlot = this.game.add.image(80, 660, weapon);
+            weaponInSlot = this.game.add.image(80, 680, weapon);
             weaponInSlot.anchor.setTo(0.5, 0.5);
             weaponInSlot.scale.setTo(1.5, 1.5);
             weaponInSlot.fixedToCamera = true;
@@ -288,6 +325,7 @@ export default class GameState extends Phaser.State {
     });
 
   };
+
 
   calculateDamageEnemy(bullet, enemy) {
     bullet.kill();
@@ -302,7 +340,6 @@ export default class GameState extends Phaser.State {
   overlapHandler() {
     // player.x -= 10;
     // player.y -= 10;
-
   }
 
   collisionHandler() {
@@ -310,29 +347,66 @@ export default class GameState extends Phaser.State {
     // console.log(`hit`);
   };
 
-  changeEnemyDirection(enemy, object) {
-    if (enemy.enemyFolow) {
-      if (enemy.x > object.x) {
-        enemy.body.velocity.setTo(40, 0);
-      }
-    }
+enemysCollide(enemy1, enemy2) {
+  if(!enemy1.enemyFolow){
+    enemy1.x += 5;
+    enemy1.y += 5;
+    this.initDirectionEnemy(enemy1);
   }
+  if(!enemy2.enemyFolow){
+    enemy2.x -= 5;
+    enemy2.y -= 5;
+    this.initDirectionEnemy(enemy2);
+  }
+}
+
+  changeEnemyDirection(enemy, object) {
+    let direction = this.game.rnd.integerInRange(1, 3);
+    if (enemy.enemyFolow) {
+    }
+    if(!enemy.enemyFolow) {
+      this.initDirectionEnemy(enemy);
+    }
+
+  }
+
 
   bulletWallHandler(bullet) {
     bullet.kill();
   };
 
   enemyPlayerCollision() {
+    player.damage(1);
+    healthBar.width = player.health;
+    player.body.bounce.setTo(1.1);
 
-      player.damage(1);
-      healthBar.width = player.health;
-      player.body.bounce.setTo(1.1);
+    if(player.health <= 0){
+      localStorage.setItem('points', pointText.text);
+      localStorage.setItem('waves', waveText.text);
+      console.log('end');
+      this.state.start(`End`);
 
+    }
+  };
 
-    // if(!player.alive){
-      // this.state.start(`End`);
-    // }
+  followNormalWalkingCycle(enemy) {
+    // console.log(enemy.facing);
+      if(enemy.angle === 0){
+        enemy.body.velocity.setTo(40,0);
+      }
+      if(enemy.angle === 90){
+        enemy.body.velocity.setTo(0,40);
+      }
+      if(enemy.angle === -180){
+        enemy.body.velocity.setTo(-40,0);
+      }
+      if(enemy.angle === -90){
+        enemy.body.velocity.setTo(0,-40);
+      }
+
   }
+
+
 
   processPlayerInput() {
     let distanceToPlayer = this.physics.arcade.distanceToPointer(player);
@@ -359,9 +433,7 @@ export default class GameState extends Phaser.State {
         }
       }
     };
-    // if (this.cursors.right.isDown) {
-    //   player.shoot('gun');
-    // }
+
     // old walking mechanics
     // if (this.cursors.left.isDown && !this.cursors.up.isDown && !this.cursors.right.isDown && !this.cursors.down.isDown) {
     //   player.walk();
