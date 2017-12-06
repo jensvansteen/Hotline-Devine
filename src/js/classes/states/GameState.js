@@ -23,6 +23,7 @@ let waveText,
   weaponInSlot,
   healthBar;
 let points = 0;
+let sound, zombieSound, pickupSound;
 
 export default class GameState extends Phaser.State {
   init() {
@@ -34,6 +35,13 @@ export default class GameState extends Phaser.State {
   preload() {
     console.log(`preload`);
     this.load.bitmapFont('justice', 'assets/fonts/justice/justice.png', 'assets/fonts/justice/justice.fnt');
+
+    this.load.audio('zombie-growl', 'assets/sounds/zombie.mp3');
+    this.load.audio('wave-ping', 'assets/sounds/wave.mp3');
+    this.load.audio('shotgun-sound', 'assets/sounds/shotgun-sound.mp3');
+    this.load.audio('uzi-sound', 'assets/sounds/uzi-sound.mp3');
+    this.load.audio('pickup-sound', 'assets/sounds/pickup-sound.mp3');
+
     this.load.image('map', 'assets/map.png', 2351, 2134);
     this.load.image('weapon-slot', 'assets/GUI/slot.png');
     this.load.image('healthbar', 'assets/GUI/healthbar.png');
@@ -41,6 +49,7 @@ export default class GameState extends Phaser.State {
     this.load.image('wall-02', 'assets/wall-02.png');
     this.load.image('wall-03', 'assets/wall-03.png');
     this.load.json('objects', 'assets/json/map.json');
+
     this.load.image('wood-table-horizontal', 'assets/objects/wood-table-horizontal.png');
     this.load.image('wood-table-vertical', 'assets/objects/wood-table-vertical.png');
     this.load.image('black-table-horizontal', 'assets/objects/black-table-horizontal.png');
@@ -57,6 +66,7 @@ export default class GameState extends Phaser.State {
     this.load.image('macbook-horizontal', 'assets/objects/macbook-horizontal.png');
     this.load.image('plant', 'assets/objects/plant.png');
     this.load.image('bullet', 'assets/bullet.png');
+
     this.load.image('shotgun', 'assets/pickups/shotgun.png');
     this.load.image('uzi', 'assets/pickups/uzi.png');
     this.load.image('axe', 'assets/pickups/axe.png');
@@ -102,6 +112,10 @@ export default class GameState extends Phaser.State {
     this.setupPickUps();
     this.setupWeapons();
     this.setupGUI();
+
+    sound = this.add.audio(`${weapon}-sound`, 0.2, false);
+    zombieSound = this.add.audio('zombie-growl', 0.1, false);
+    pickupSound = this.add.audio('pickup-sound', 0.2, false);
   };
 
   setupEnemies() {
@@ -265,12 +279,17 @@ export default class GameState extends Phaser.State {
 
       if (this.enemyPool.length === 0) {
         wave++;
+        let wavePing = this.add.audio('wave-ping', 0.3,false);
+        wavePing.play();
         waveText.text = `${wave} `;
         this.deadEnemies.removeAll(true);
         this.startNewWave();
       }
 
       enemy.walk();
+      if(enemy.inCamera){
+        zombieSound.play();
+      }
 
     });
   }
@@ -291,7 +310,7 @@ export default class GameState extends Phaser.State {
 
   startNewWave() {
     numEnemys += wave * 5;
-    console.log(wave);
+    // console.log(wave);
     this.setupEnemies();
     enemyText.text = `${this.enemyPool.length}/${numEnemys} `;
   }
@@ -314,7 +333,7 @@ export default class GameState extends Phaser.State {
   }
 
   update() {
-    console.log(waveText.text);
+
     this.physics.arcade.collide(player, this.wallGroup, this.collisionHandler, null, this);
     this.physics.arcade.overlap(player, this.wallGroup, this.overlapHandler, null, this);
     this.physics.arcade.collide(this.enemyPool, this.enemyPool, this.enemysCollide, null, this);
@@ -342,6 +361,7 @@ export default class GameState extends Phaser.State {
 
     this.physics.arcade.overlap(player, this.pickUpGroup, this.playerPickupHandler, null, this);
 
+    sound.key = `${weapon}-sound`;
   };
 
   playerPickupHandler(player, weaponSprite) {
@@ -370,10 +390,9 @@ export default class GameState extends Phaser.State {
           this.pickUpGroup.remove(pickup);
           player.heal(100);
           healthBar.width = player.health*3;
+          pickupSound.play();
           }
         }
-        
-      
     });
 
   };
@@ -382,6 +401,7 @@ export default class GameState extends Phaser.State {
     bullet.kill();
     if (weapon === 'uzi') {
       enemy.damage(3);
+
     } else if (weapon === 'shotgun') {
       enemy.damage(10);
     }
@@ -397,8 +417,6 @@ export default class GameState extends Phaser.State {
   }
 
   overlapHandler() {
-    // player.x -= 10;
-    // player.y -= 10;
   }
 
   collisionHandler() {
@@ -425,7 +443,6 @@ export default class GameState extends Phaser.State {
     if (!enemy.enemyFolow) {
       this.initDirectionEnemy(enemy);
     }
-
   }
 
   bulletWallHandler(bullet) {
@@ -442,7 +459,6 @@ export default class GameState extends Phaser.State {
       localStorage.setItem('waves', waveText.text);
       console.log('end');
       this.state.start(`End`);
-
     }
   };
 
@@ -502,19 +518,24 @@ export default class GameState extends Phaser.State {
     if (this.game.input.activePointer.isDown) {
       if (weapon != 'none' && player.alive) {
         player.shoot(weapon);
+        if(weapon != 'axe'){
 
+        }
         if (weapon === 'axe') {
           this.physics.arcade.overlap(player, this.enemyPool, this.checkHitWithAxe, null, this);
         }
         if (weapon === 'uzi') {
           uzi.fire();
+          sound.play();
         }
         if (weapon === 'shotgun') {
           shotgun.fire();
+          sound.play();
         }
       }
     };
 
+  }
     // old walking mechanics
     // if (this.cursors.left.isDown && !this.cursors.up.isDown && !this.cursors.right.isDown && !this.cursors.down.isDown) {
     //   player.walk();
@@ -534,7 +555,6 @@ export default class GameState extends Phaser.State {
     // else{
     //   player.stand();
     // }
-  }
 
   render() {
     // this.game.debug.spriteInfo(player, 32, 32);
