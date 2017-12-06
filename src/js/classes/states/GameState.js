@@ -12,7 +12,7 @@ let walls,
 let numEnemys = 10;
 let shotgun,
   uzi;
-let weapon = 'shotgun';
+let weapon = 'none';
 let firstRender;
 let wave = 1;
 const firstPlayerX = 300;
@@ -28,6 +28,7 @@ let uziSound, shotgunSound, zombieSound, pickupSound;
 export default class GameState extends Phaser.State {
   init() {
     console.log(`init`);
+    weapon = 'none';
     localStorage.removeItem('points');
     localStorage.removeItem('waves');
   }
