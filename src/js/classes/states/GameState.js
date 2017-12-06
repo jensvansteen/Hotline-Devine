@@ -28,6 +28,7 @@ let uziSound, shotgunSound, zombieSound, pickupSound;
 export default class GameState extends Phaser.State {
   init() {
     console.log(`init`);
+    //reset waarden als de game word gerestart
     weapon = 'none';
     points = 0;
     localStorage.removeItem('points');
@@ -36,6 +37,7 @@ export default class GameState extends Phaser.State {
 
   preload() {
     console.log(`preload`);
+    //inladen van alles assets: audio, json, images
     this.load.bitmapFont('justice', 'assets/fonts/justice/justice.png', 'assets/fonts/justice/justice.fnt');
 
     this.load.audio('zombie-growl', 'assets/sounds/zombie.mp3');
@@ -83,6 +85,7 @@ export default class GameState extends Phaser.State {
     this.world.setBounds(0, 0, 2351, 2134);
     numEnemys = 10;
 
+    //Groepen maken voor elke json object
     let tempObjects = this.game.cache.getJSON('objects');
     walls = Array.from(tempObjects.walls);
     mapObjects = Array.from(tempObjects.objects);
@@ -103,9 +106,11 @@ export default class GameState extends Phaser.State {
     this.deadEnemies = this.add.group();
     this.pickUpGroup = this.add.group();
 
+    //aanamaken van de verschillende functies
     this.setupWalls();
     this.setupMapObjects();
     this.setupOpvul();
+
     player = new Player(this.game, firstPlayerX, firstPlayerY);
     this.camera.follow(player);
     this.add.existing(player);
@@ -123,6 +128,7 @@ export default class GameState extends Phaser.State {
   };
 
   setupEnemies() {
+    //enemies aanmaken en checken op welke plaats hij spawnt
     for (let i = 0; i < numEnemys; i++) {
       let tempEnemy = i;
       tempEnemy = new Enemy(this.game, this.game.rnd.integerInRange(50, this.background.width - 50), this.game.rnd.integerInRange(50, this.background.height - 50));
@@ -138,6 +144,7 @@ export default class GameState extends Phaser.State {
   };
 
   setupRooms() {
+    //kamer id's opstellen, dit helpt om te checken of de zombies de player zien
     rooms.forEach(room => {
       let newRoom = new MapObject(this.game, room.x, room.y, room.width, room.height, room.picture);
       newRoom.id = room.id;
@@ -147,6 +154,7 @@ export default class GameState extends Phaser.State {
   };
 
   setupWalls() {
+    //walls uit json file halen met coordinaten en hoogte en breedte
     walls.forEach(wall => {
       wall = new Wall(this.game, wall.x, wall.y, wall.width, wall.height, wall.type);
       this.wallGroup.add(wall);
@@ -154,6 +162,7 @@ export default class GameState extends Phaser.State {
   };
 
   setupOpvul() {
+    //dit zijn ruimte die uit de json komen om te voorzorgen dat zombies buiten de map spawnen
     opvul.forEach(vlak => {
       vlak = new Wall(this.game, vlak.x, vlak.y, vlak.width, vlak.height, vlak.type);
       this.opvulGroup.add(vlak);
@@ -161,12 +170,14 @@ export default class GameState extends Phaser.State {
   }
 
   checkEnemyWallOverlap() {
+    //dit checkt of er een zombie met een wall overlapt
     this.physics.arcade.overlap(this.wallGroup, this.enemyPool, this.enemyWallOverlap, null, this);
     this.physics.arcade.overlap(this.mapObjectGroup, this.enemyPool, this.enemyWallOverlap, null, this);
     this.physics.arcade.overlap(this.opvulGroup, this.enemyPool, this.enemyWallOverlap, null, this);
   }
 
   setupMapObjects() {
+    //objects die uit json file komen en op de map worden geplaatst
     mapObjects.forEach(object => {
       object = new MapObject(this.game, object.x, object.y, object.width, object.height, object.picture);
       this.mapObjectGroup.add(object);
@@ -174,6 +185,7 @@ export default class GameState extends Phaser.State {
   };
 
   setupPickUps() {
+    //het plaatsen op de map van pickups (zoals axe)
     pickUps.forEach(pickup => {
       pickup = new PickUp(this.game, pickup.x, pickup.y, pickup.picture);
       this.pickUpGroup.add(pickup);
@@ -181,6 +193,7 @@ export default class GameState extends Phaser.State {
   };
 
   setupWeapons() {
+    //setup van de wapens, bullet speed, fire rate
     shotgun = this.game.add.weapon(10, 'bullet');
     shotgun.bulletSpeed = 600;
     shotgun.fireRate = 500;
@@ -193,7 +206,7 @@ export default class GameState extends Phaser.State {
   };
 
   setupGUI() {
-
+    // Graphical User Interface voor de game, zoals health, waves, score, hoeveel zombies er nog zijn in de wave, welk wapen je vast hebt
     waveText = this.add.text(this.camera.width - 50, 580, "1 ", {
       font: "80px justice",
       fill: "white",
@@ -226,6 +239,7 @@ export default class GameState extends Phaser.State {
   };
 
   setupBackground() {
+    //de map plaatsen (dit is alleen de vloer)
     this.background = this.add.tileSprite(0, 0, 2351, 2134, 'map');
   };
 
@@ -246,16 +260,17 @@ export default class GameState extends Phaser.State {
   }
 
   enemyWallOverlap(object, enemy) {
+    //checkt als een enemy met een wall overlapt
     enemy.reset(this.game.rnd.integerInRange(50, this.background.width - 50), this.game.rnd.integerInRange(50, this.background.height - 50), 10);
     this.checkDistanceWithCamera(enemy);
     this.checkEnemyWallOverlap();
   };
 
   spawnEnemies() {
-
+    // spawnt de enemies op de map en zorgt ook voor de walk cycle van de enemy, de loot die hij dropt als hij dood gaat, en een dead image
     this.enemyPool.forEach(enemy => {
 
-      if (enemy.roomId === player.roomId && enemy.alive && player.alive && Phaser.Math.distance(enemy.x, enemy.y, player.x, player.y) < 300) {
+      if (enemy.roomId === player.roomId && enemy.alive && player.alive && Phaser.Math.distance(enemy.x, enemy.y, player.x, player.y) < 400) {
         enemy.enemyFolow = true;
         let angle = this.game.physics.arcade.angleBetween(enemy, player);
         enemy.rotation = angle;
@@ -274,6 +289,7 @@ export default class GameState extends Phaser.State {
       }
 
       if (!enemy.alive) {
+        //als er een enemy dood is, score verhogen met een random waarde, en toevoegen aan de deadEnemy groep
         this.createDeadEnemy(enemy);
         this.dropLoot(enemy);
         zombieSound.play();
@@ -283,6 +299,7 @@ export default class GameState extends Phaser.State {
       }
 
       if (this.enemyPool.length === 0) {
+        // als elke enemy dood is start een nieuwe wave met een ping
         wave++;
         let wavePing = this.add.audio('wave-ping', 0.3,false);
         wavePing.play();
@@ -297,6 +314,7 @@ export default class GameState extends Phaser.State {
   }
 
   createDeadEnemy(enemy) {
+    // het aanmaken van een dode enemy met verschilleden dood image
     let deadEnemy;
     if (weapon === 'uzi') {
       deadEnemy = this.game.add.image(enemy.x, enemy.y, 'dead1');
@@ -311,6 +329,7 @@ export default class GameState extends Phaser.State {
   }
 
   startNewWave() {
+    // het starten van een nieuwe wave en het moeilijker maken met meer zombies
     numEnemys += wave * 5;
     // console.log(wave);
     this.setupEnemies();
@@ -318,7 +337,7 @@ export default class GameState extends Phaser.State {
   }
 
   checkDistanceWithCamera(enemy) {
-
+    // checken van de afstand tussen de camera
     const cameraInitX = 0;
     const cameraInitY = this.background.height - this.camera.height;
 
@@ -335,7 +354,7 @@ export default class GameState extends Phaser.State {
   }
 
   update() {
-
+    // dit wordt geloopt, hierin zitten vooral collision detecties
     this.physics.arcade.collide(player, this.wallGroup, this.collisionHandler, null, this);
     this.physics.arcade.overlap(player, this.wallGroup, this.overlapHandler, null, this);
     this.physics.arcade.collide(this.enemyPool, this.enemyPool, this.enemysCollide, null, this);
@@ -348,10 +367,11 @@ export default class GameState extends Phaser.State {
     this.physics.arcade.collide(this.enemyPool, this.mapObjectGroup, this.changeEnemyDirection, null, this);
     this.physics.arcade.collide(this.enemyPool, this.wallGroup, this.changeEnemyDirection, null, this);
     this.physics.arcade.overlap(this.enemyPool, this.roomGroup, this.logRoomEnemy, null, this);
-
+    //het opnieuw spawnen van enemies als de wave gedaan is, dit checken
     this.spawnEnemies();
     this.processPlayerInput();
     // console.log(this.enemyPool.length);
+    //als een kogel overlapt met een muur of enemy dan moet deze een functie uitvoeren
     uzi.bullets.forEach(bullet => {
       this.physics.arcade.overlap(bullet, this.wallGroup, this.bulletWallHandler, null, this);
       this.physics.arcade.overlap(bullet, this.enemyPool, this.calculateDamageEnemy, null, this);
@@ -360,7 +380,7 @@ export default class GameState extends Phaser.State {
       this.physics.arcade.overlap(bullet, this.wallGroup, this.bulletWallHandler, null, this);
       this.physics.arcade.overlap(bullet, this.enemyPool, this.calculateDamageEnemy, null, this);
     });
-
+    // dit checkt of er een overlap is met de pickup item en de player
     this.physics.arcade.overlap(player, this.pickUpGroup, this.playerPickupHandler, null, this);
   };
 
@@ -370,6 +390,7 @@ export default class GameState extends Phaser.State {
       // console.log(pickup);
       if (Phaser.Math.distance(pickup.position.x, pickup.position.y, player.x, player.y) < 100) {
         // console.log(pickup.key);
+        // pickup opnemen via de spatie knop, maar dit kan geen medic zijn
         if (this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && pickup.key !== 'medic') {
           weapon = pickup.key;
           weaponSprite.kill();
@@ -385,6 +406,7 @@ export default class GameState extends Phaser.State {
             weaponInSlot.fixedToCamera = true;
           }
         }
+        //als het een medic is moet je max health terug krijgen
         if (pickup.key === 'medic') {
           weaponSprite.kill();
           this.pickUpGroup.remove(pickup);
@@ -398,6 +420,7 @@ export default class GameState extends Phaser.State {
   };
 
   calculateDamageEnemy(bullet, enemy) {
+    // damage bereken per wapen voor de enemie
     bullet.kill();
     if (weapon === 'uzi') {
       enemy.damage(3);
@@ -417,11 +440,21 @@ export default class GameState extends Phaser.State {
   }
 
   overlapHandler() {
+    //overlap met een wal of object op de map als player
+    console.log('overlap');
+    if(player.rotation <= 0){
+      player.x++;
+      player.y++;
+    } else if (player.rotation >= 0) {
+      player.x--;
+      player.y--;
+    }
   }
 
   collisionHandler() {
-    //hit met wall of object op de map
+    //hit met wall of object op de map als player
     // console.log(`hit`);
+
   };
 
   enemysCollide(enemy1, enemy2) {
@@ -508,61 +541,48 @@ export default class GameState extends Phaser.State {
     player.body.velocity.x = 0;
     player.body.velocity.y = 0;
 
-    if (this.cursors.up.isDown) {
+    if (this.cursors.up.isDown || this.game.input.keyboard.isDown(Phaser.Keyboard.Z) || this.game.input.keyboard.isDown(Phaser.Keyboard.W)  ) {
       if (distanceToPlayer > 10) {
         this.physics.arcade.moveToPointer(player, player.data.speed);
         player.walk();
       }
     }
+    if (this.cursors.down.isDown || this.game.input.keyboard.isDown(Phaser.Keyboard.S)) {
+      if (distanceToPlayer > 10) {
+        player.angle = 90;
+
+        this.physics.arcade.moveToPointer(player, -player.data.speed);
+        player.walk();
+      }
+    }
 
     if (this.game.input.activePointer.isDown) {
+      //checken of de player een wapen vast heeft en hij nog leeft
+      // de player shiet met het wapen die hij vast heeft
       if (weapon != 'none' && player.alive) {
+        player.data.speed = 50;
         player.shoot(weapon);
-        // if(weapon != 'axe'){
-        //   sound.play();
-        //   sound.onStop.add(this.soundStop);
-        // }
         if (weapon === 'axe') {
           this.physics.arcade.overlap(player, this.enemyPool, this.checkHitWithAxe, null, this);
         }
         if (weapon === 'uzi') {
           uzi.fire();
           uziSound.play();
-          // sound.onStop.add(this.soundStop);
         }
         if (weapon === 'shotgun') {
           shotgun.fire();
           shotgunSound.play();
         }
       }
-    };
+    } else {
+      player.data.speed = 350;
+    }
 
   }
 
-  // soundStop() {
-  //   sound.stop();
-  // }
-    // old walking mechanics
-    // if (this.cursors.left.isDown && !this.cursors.up.isDown && !this.cursors.right.isDown && !this.cursors.down.isDown) {
-    //   player.walk();
-    //   player.body.velocity.x = -player.data.speed;
-    // } else if (this.cursors.right.isDown && !this.cursors.up.isDown && !this.cursors.left.isDown && !this.cursors.down.isDown) {
-    //   player.walk();
-    //   player.body.velocity.x = player.data.speed;
-    // }
-    //
-    // if (this.cursors.up.isDown && !this.cursors.left.isDown && !this.cursors.right.isDown && !this.cursors.down.isDown) {
-    //   player.walk();
-    //   player.body.velocity.y = player.data.speed;
-    // } else if (this.cursors.down.isDown && !this.cursors.left.isDown && !this.cursors.right.isDown && !this.cursors.up.isDown) {
-    //   player.walk();
-    //   player.body.velocity.y = -player.data.speed;
-    // }
-    // else{
-    //   player.stand();
-    // }
+
 
   render() {
-    // this.game.debug.spriteInfo(player, 32, 32);
+    // this.game.debug.spriteInfo(player, 20, 70);
   }
 }
