@@ -357,7 +357,9 @@ export default class GameState extends Phaser.State {
     // dit wordt geloopt, hierin zitten vooral collision detecties
     this.physics.arcade.collide(player, this.wallGroup, this.collisionHandler, null, this);
     this.physics.arcade.overlap(player, this.wallGroup, this.overlapHandler, null, this);
+    this.physics.arcade.overlap(player, this.opvulGroup, this.overlapHandler, null, this);
     this.physics.arcade.collide(this.enemyPool, this.enemyPool, this.enemysCollide, null, this);
+    this.physics.arcade.collide(this.enemyPool, this.opvulGroup, this.enemyOutsideMap, null, this);
     this.physics.arcade.overlap(player, this.roomGroup, this.logRoom, null, this);
 
     this.physics.arcade.collide(player, this.mapObjectGroup, this.collisionHandler, null, this);
