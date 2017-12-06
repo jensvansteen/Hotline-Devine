@@ -12,7 +12,7 @@ let walls,
 let numEnemys = 10;
 let shotgun,
   uzi;
-let weapon = 'none';
+let weapon = 'uzi';
 let firstRender;
 let wave = 1;
 const firstPlayerX = 300;
@@ -519,18 +519,16 @@ export default class GameState extends Phaser.State {
       if (weapon != 'none' && player.alive) {
         player.shoot(weapon);
         if(weapon != 'axe'){
-
+          sound.play();
         }
         if (weapon === 'axe') {
           this.physics.arcade.overlap(player, this.enemyPool, this.checkHitWithAxe, null, this);
         }
         if (weapon === 'uzi') {
           uzi.fire();
-          sound.play();
         }
         if (weapon === 'shotgun') {
           shotgun.fire();
-          sound.play();
         }
       }
     };
