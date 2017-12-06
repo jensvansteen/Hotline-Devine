@@ -12,13 +12,14 @@ let walls,
 let numEnemys = 10;
 let shotgun,
   uzi;
-let weapon = 'none';
+let weapon = 'shotgun';
 let firstRender;
 let wave = 1;
 const firstPlayerX = 300;
 const firstPlayerY = 1860;
 let waveText, pointText, enemyText, weaponInSlot, healthBar;
 let points = 0;
+let sound, zombieSound;
 
 export default class GameState extends Phaser.State {
   init() {
@@ -104,8 +105,8 @@ export default class GameState extends Phaser.State {
     this.setupWeapons();
     this.setupGUI();
 
-    let zombieSound = this.add.audio('zombie-growl', 0.1,true);
-    zombieSound.play();
+    sound = this.add.audio(`${weapon}-sound`, 0.2, false);
+    zombieSound = this.add.audio('zombie-growl', 0.2, false);
   };
 
   setupEnemies() {
@@ -262,7 +263,7 @@ export default class GameState extends Phaser.State {
         deadEnemy.anchor.setTo(0.5, 0.5);
         this.deadEnemies.add(deadEnemy);
         this.enemyPool.remove(enemy);
-        let zombieSound = this.add.audio('zombie-growl', 0.3,false);
+
         zombieSound.play();
         pointText.text = `${points+=this.game.math.between(10,30)} `;
         enemyText.text = `${this.enemyPool.length}/${numEnemys} `;
@@ -278,7 +279,9 @@ export default class GameState extends Phaser.State {
       }
 
       enemy.walk();
-
+      if(enemy.inCamera){
+        zombieSound.play();
+      }
 
     });
   }
@@ -338,7 +341,8 @@ export default class GameState extends Phaser.State {
 
     this.physics.arcade.overlap(player, this.pickUpGroup, this.playerPickupHandler, null, this);
 
-
+    sound.key = `${weapon}-sound`;
+    sound.onStop.add(sound.stop);
   };
 
   playerPickupHandler(player, weaponSprite) {
@@ -435,7 +439,7 @@ enemysCollide(enemy1, enemy2) {
 
   enemyPlayerCollision() {
     player.damage(1);
-    healthBar.width = player.health;
+    healthBar.width = player.health*3;
     player.body.bounce.setTo(1.1);
     if(player.health <= 0){
       localStorage.setItem('points', pointText.text);
@@ -482,19 +486,24 @@ enemysCollide(enemy1, enemy2) {
     if (this.game.input.activePointer.isDown) {
       if (weapon != 'none' && player.alive) {
         player.shoot(weapon);
-        // let ShotgunSound = this.add.audio(`shotgun-sound`, 0.2,false);
-        // ShotgunSound.play();
 
         if (weapon === 'uzi') {
-
           uzi.fire();
+          sound.play();
         }
         if (weapon === 'shotgun') {
           shotgun.fire();
-
+          sound.play();
         }
       }
     };
+
+  }
+
+
+
+
+
 
     // old walking mechanics
     // if (this.cursors.left.isDown && !this.cursors.up.isDown && !this.cursors.right.isDown && !this.cursors.down.isDown) {
@@ -515,7 +524,6 @@ enemysCollide(enemy1, enemy2) {
     // else{
     //   player.stand();
     // }
-  }
 
   render() {
     // this.game.debug.spriteInfo(player, 32, 32);

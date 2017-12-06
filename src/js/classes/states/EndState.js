@@ -8,7 +8,6 @@ export default class EndState extends Phaser.State {
 
   preload() {
     console.log(`preload`);
-    // this.load.bitmapFont('justice', 'assets/fonts/justice/justice.png', 'assets/fonts/justice/justice.fnt');
     this.load.image('endScreen', 'assets/end-screen.jpg');
     this.load.image('restart-button', 'assets/GUI/restart-button.png', 433, 122);
 
@@ -30,9 +29,9 @@ export default class EndState extends Phaser.State {
     title = this.game.add.text(0, this.game.height/4 , `Your score: `, { font: "110px justice", fill: "white", boundsAlignH: "center", boundsAlignV: "middle" });
     title.setTextBounds(0, 100, this.world.width, 100);
     title.angle = -5;
-    waveText = this.game.add.text(0, this.game.height/2-100 , `${waves} `, { font: "120px justice", fill: "white", boundsAlignH: "center", boundsAlignV: "middle" });
+    waveText = this.game.add.text(0, this.game.height/2-150 , `${waves} `, { font: "120px justice", fill: "white", boundsAlignH: "center", boundsAlignV: "middle" });
     waveText.setTextBounds(0, 100, this.world.width, 100);
-    pointText = this.game.add.text(0, this.game.height/2 , `${points} `, { font: "50px justice", fill: "white", boundsAlignH: "center", boundsAlignV: "middle" });
+    pointText = this.game.add.text(0, this.game.height/2-50 , `${points} `, { font: "50px justice", fill: "white", boundsAlignH: "center", boundsAlignV: "middle" });
     pointText.setTextBounds(0, 100, this.world.width, 100);
   }
 
