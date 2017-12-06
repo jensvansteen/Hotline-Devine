@@ -9,7 +9,7 @@ let walls,
   pickUps,
   opvul,
   rooms;
-let numEnemys = 10;
+let numEnemys;
 let shotgun,
   uzi;
 let weapon = 'none';
@@ -29,6 +29,7 @@ export default class GameState extends Phaser.State {
   init() {
     console.log(`init`);
     weapon = 'none';
+    points = 0;
     localStorage.removeItem('points');
     localStorage.removeItem('waves');
   }
@@ -80,6 +81,7 @@ export default class GameState extends Phaser.State {
 
   create() {
     this.world.setBounds(0, 0, 2351, 2134);
+    numEnemys = 10;
 
     let tempObjects = this.game.cache.getJSON('objects');
     walls = Array.from(tempObjects.walls);
