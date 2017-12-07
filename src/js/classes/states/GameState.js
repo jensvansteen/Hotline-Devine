@@ -71,6 +71,7 @@ export default class GameState extends Phaser.State {
     this.load.image('pingpong', 'assets/objects/pingpong.png');
     this.load.image('kicker', 'assets/objects/kicker.png');
     this.load.image('kast-medium-horizontal', 'assets/objects/kast-medium-horizontal.png');
+    this.load.image('kast-medium-vertical', 'assets/objects/kast-medium-vertical.png');
     this.load.image('stair-01', 'assets/objects/stairs-01.png');
     this.load.image('stair-02', 'assets/objects/stairs-02.png');
     this.load.image('elevator', 'assets/objects/elevator-01.png');
@@ -380,6 +381,7 @@ export default class GameState extends Phaser.State {
     this.physics.arcade.collide(player, this.wallGroup, this.collisionHandler, null, this);
     this.physics.arcade.overlap(player, this.wallGroup, this.overlapHandler, null, this);
     this.physics.arcade.overlap(player, this.opvulGroup, this.overlapHandler, null, this);
+    this.physics.arcade.overlap(player, this.doorGroup, this.overlapHandler, null, this);
     this.physics.arcade.collide(this.enemyPool, this.enemyPool, this.enemysCollide, null, this);
     this.physics.arcade.collide(this.enemyPool, this.opvulGroup, this.enemyOutsideMap, null, this);
     this.physics.arcade.overlap(player, this.roomGroup, this.logRoom, null, this);
@@ -466,7 +468,7 @@ export default class GameState extends Phaser.State {
   logRoomEnemy(enemy, room) {
     enemy.roomId = room.id;
   }
-  
+
 //checken van de positie van de player tegenover de deur en hoe de deur dan moet draaien
   checkDoor(player, door) {
     let newDoor;
@@ -516,7 +518,7 @@ export default class GameState extends Phaser.State {
         }
       }
       if (door.dir === 'verttop') {
-        if (door.closed && player.x > door.x) {    
+        if (door.closed && player.x > door.x) {
          newDoor = new Door(this.game, door.x - door.height, door.y, door.height, door.width, 'door');
           newDoor.toLeft = true;
           this.addDoor(door,newDoor);
@@ -538,7 +540,7 @@ export default class GameState extends Phaser.State {
         }
       }
       if (door.dir === 'vertdown') {
-        if (door.closed && player.x > door.x) {    
+        if (door.closed && player.x > door.x) {
          newDoor = new Door(this.game, door.x - door.height, door.y + (door.height - door.width), door.height, door.width, 'door');
           newDoor.toLeft = true;
           this.addDoor(door,newDoor);
@@ -561,7 +563,7 @@ export default class GameState extends Phaser.State {
       }
     }
   }
-  
+
   addDoor(door, newDoor) {
     newDoor.dir = door.dir;
     this.doorGroup.add(newDoor);
@@ -678,8 +680,6 @@ export default class GameState extends Phaser.State {
     }
     if (this.cursors.down.isDown || this.game.input.keyboard.isDown(Phaser.Keyboard.S)) {
       if (distanceToPlayer > 10) {
-        player.angle = 90;
-
         this.physics.arcade.moveToPointer(player, -player.data.speed);
         player.walk();
       }
