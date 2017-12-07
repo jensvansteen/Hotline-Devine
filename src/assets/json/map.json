@@ -315,14 +315,6 @@
     "picture": "black-table-horizontal"
   },
   {
-    "name": "atelier 2 - rij 5",
-    "x" : 583,
-    "y": 1496,
-    "width": 488,
-    "height":64,
-    "picture": "black-table-horizontal"
-  },
-  {
     "name": "atelier 2 - bureau",
     "x" : 583,
     "y": 2009,
@@ -722,5 +714,159 @@
     "picture": "wall-03",
     "id" : 10  
   }
-]
+],
+"doors": [
+  {
+    "name": "deurdubbel bossuwee rechts",
+    "x": 743.5,
+    "y": 676.3,
+    "width": 60,
+    "height": 18,
+    "dir" : "horright" 
+  },
+  {
+    "name": "deurdubbel bossuwee links",
+    "x": 683.5,
+    "y": 676.3,
+    "width": 60,
+    "height": 18,
+    "dir" : "horleft" 
+  },
+  {
+    "name": "deurdubbel bossuwee linkerkant boven",
+    "x": 987.5,
+    "y": 402,
+    "width": 18,
+    "height": 60,
+    "dir" : "verttop" 
+  },
+  {
+    "name": "deurdubbel bossuwee linkerkant onder",
+    "x": 987.5,
+    "y": 462,
+    "width": 18,
+    "height": 60,
+    "dir" : "vertdown" 
+  },
+  {
+    "name": "deur kotje",
+    "x": 756,
+    "y": 211.5,
+    "width": 60,
+    "height": 18,
+    "dir" : "horleft" 
+  },
+  {
+    "name": "atelier1 links",
+    "x": 1202.4,
+    "y": 676.3,
+    "width": 60,
+    "height": 18,
+    "dir" : "horleft" 
+  },
+  {
+    "name": "atelier1 rechts",
+    "x": 1262.4,
+    "y": 676.3,
+    "width": 60,
+    "height": 18,
+    "dir" : "horright" 
+  },
+  {
+    "name": "atelier1 bij lift kotje links",
+    "x": 2034.8,
+    "y": 676.3,
+    "width": 60,
+    "height": 18,
+    "dir" : "horleft" 
+  },
+  {
+    "name": "atelier1 bij lift kotje rechts",
+    "x": 2094.8,
+    "y": 676.3,
+    "width": 60,
+    "height": 18,
+    "dir" : "horright" 
+  },
+  {
+    "name": "liftkotje links",
+    "x": 2034.8,
+    "y": 1043,
+    "width": 60,
+    "height": 18,
+    "dir" : "horleft" 
+  },
+  {
+    "name": "liftkotje rechts",
+    "x": 2094.8,
+    "y": 1043,
+    "width": 60,
+    "height": 18,
+    "dir" : "horright" 
+  },
+  {
+    "name": "tussenkotje links",
+    "x": 2034.8,
+    "y": 1407,
+    "width": 60,
+    "height": 18,
+    "dir" : "horleft" 
+  },
+  {
+    "name": "tussenkotje rechts",
+    "x": 2094.8,
+    "y": 1407,
+    "width": 60,
+    "height": 18,
+    "dir" : "horright" 
+  },
+  {
+    "name": "docenten links",
+    "x": 279.9,
+    "y": 1407,
+    "width": 60,
+    "height": 18,
+    "dir" : "horleft" 
+  },
+  {
+    "name": "docenten rechts",
+    "x": 339.9,
+    "y": 1407,
+    "width": 60,
+    "height": 18,
+    "dir" : "horright" 
+  },
+  {
+    "name": "atelier 2 links",
+    "x": 786.6,
+    "y": 1407,
+    "width": 60,
+    "height": 18,
+    "dir" : "horleft" 
+  },
+  {
+    "name": "atelier 2 rechts",
+    "x": 846.6,
+    "y": 1407,
+    "width": 60,
+    "height": 18,
+    "dir" : "horright" 
+  },
+  {
+    "name": "atelier 2 - 3 deur",
+    "x": 1373,
+    "y": 1689.2,
+    "width": 18,
+    "height": 60,
+    "dir" : "verttop" 
+  },
+  {
+    "name": "onderhoudskotje atelier 3",
+    "x": 2030,
+    "y": 1811,
+    "width": 18,
+    "height": 60,
+    "dir" : "vertdown" 
+  }
+] 
 }

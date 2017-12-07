@@ -3,12 +3,14 @@ import Wall from '../objects/Wall';
 import MapObject from '../objects/MapObject';
 import Enemy from '../objects/Enemy';
 import PickUp from '../objects/PickUp';
+import Door from '../objects/Door';
 let player;
 let walls,
   mapObjects,
   pickUps,
   opvul,
-  rooms;
+  rooms,
+  doors;
 let numEnemys;
 let shotgun,
   uzi;
@@ -23,7 +25,10 @@ let waveText,
   weaponInSlot,
   healthBar;
 let points = 0;
-let uziSound, shotgunSound, zombieSound, pickupSound;
+let uziSound,
+  shotgunSound,
+  zombieSound,
+  pickupSound;
 
 export default class GameState extends Phaser.State {
   init() {
@@ -31,6 +36,7 @@ export default class GameState extends Phaser.State {
     //reset waarden als de game word gerestart
     weapon = 'none';
     points = 0;
+    wave = 1;
     localStorage.removeItem('points');
     localStorage.removeItem('waves');
   }
@@ -52,6 +58,7 @@ export default class GameState extends Phaser.State {
     this.load.image('wall-01', 'assets/wall-01.png');
     this.load.image('wall-02', 'assets/wall-02.png');
     this.load.image('wall-03', 'assets/wall-03.png');
+    this.load.image('door', 'assets/door.png');
     this.load.json('objects', 'assets/json/map.json');
 
     this.load.image('wood-table-horizontal', 'assets/objects/wood-table-horizontal.png');
@@ -92,6 +99,7 @@ export default class GameState extends Phaser.State {
     pickUps = Array.from(tempObjects.pickups);
     opvul = Array.from(tempObjects.opvul);
     rooms = Array.from(tempObjects.rooms);
+    doors = Array.from(tempObjects.doors);
 
     firstRender = true;
 
@@ -99,6 +107,7 @@ export default class GameState extends Phaser.State {
     this.roomGroup = this.add.group();
     this.setupBackground();
     this.setupRooms();
+    this.doorGroup = this.add.group();
     this.wallGroup = this.add.group();
     this.opvulGroup = this.add.group();
     this.mapObjectGroup = this.add.group();
@@ -107,6 +116,7 @@ export default class GameState extends Phaser.State {
     this.pickUpGroup = this.add.group();
 
     //aanamaken van de verschillende functies
+    this.setupDoors();
     this.setupWalls();
     this.setupMapObjects();
     this.setupOpvul();
@@ -151,6 +161,18 @@ export default class GameState extends Phaser.State {
       console.log(newRoom.id);
       this.roomGroup.add(newRoom);
     })
+  };
+
+  setupDoors() {
+    doors.forEach(door => {
+      let newDoor = new Door(this.game, door.x, door.y, door.width, door.height, 'door');
+      newDoor.closed = true;
+      newDoor.dir = door.dir;
+      this.doorGroup.add(newDoor);
+    })
+    // console.log(doors);
+    // let door = new Door(this.game, 683.5, 676.3, 120, 18, 'door');
+    // this.doorGroup.add(door);
   };
 
   setupWalls() {
@@ -301,7 +323,7 @@ export default class GameState extends Phaser.State {
       if (this.enemyPool.length === 0) {
         // als elke enemy dood is start een nieuwe wave met een ping
         wave++;
-        let wavePing = this.add.audio('wave-ping', 0.3,false);
+        let wavePing = this.add.audio('wave-ping', 0.3, false);
         wavePing.play();
         waveText.text = `${wave} `;
         this.deadEnemies.removeAll(true);
@@ -361,6 +383,7 @@ export default class GameState extends Phaser.State {
     this.physics.arcade.collide(this.enemyPool, this.enemyPool, this.enemysCollide, null, this);
     this.physics.arcade.collide(this.enemyPool, this.opvulGroup, this.enemyOutsideMap, null, this);
     this.physics.arcade.overlap(player, this.roomGroup, this.logRoom, null, this);
+    this.physics.arcade.collide(player, this.doorGroup, this.checkDoor, null, this);
 
     this.physics.arcade.collide(player, this.mapObjectGroup, this.collisionHandler, null, this);
     this.physics.arcade.overlap(player, this.mapObjectGroup, this.overlapHandler, null, this);
@@ -369,6 +392,7 @@ export default class GameState extends Phaser.State {
     this.physics.arcade.collide(this.enemyPool, this.mapObjectGroup, this.changeEnemyDirection, null, this);
     this.physics.arcade.collide(this.enemyPool, this.wallGroup, this.changeEnemyDirection, null, this);
     this.physics.arcade.overlap(this.enemyPool, this.roomGroup, this.logRoomEnemy, null, this);
+    this.physics.arcade.collide(this.enemyPool, this.doorGroup, this.changeEnemyDirection, null, this);
     //het opnieuw spawnen van enemies als de wave gedaan is, dit checken
     this.spawnEnemies();
     this.processPlayerInput();
@@ -376,10 +400,12 @@ export default class GameState extends Phaser.State {
     //als een kogel overlapt met een muur of enemy dan moet deze een functie uitvoeren
     uzi.bullets.forEach(bullet => {
       this.physics.arcade.overlap(bullet, this.wallGroup, this.bulletWallHandler, null, this);
+      this.physics.arcade.overlap(bullet, this.doorGroup, this.bulletWallHandler, null, this);
       this.physics.arcade.overlap(bullet, this.enemyPool, this.calculateDamageEnemy, null, this);
     });
     shotgun.bullets.forEach(bullet => {
       this.physics.arcade.overlap(bullet, this.wallGroup, this.bulletWallHandler, null, this);
+      this.physics.arcade.overlap(bullet, this.doorGroup, this.bulletWallHandler, null, this);
       this.physics.arcade.overlap(bullet, this.enemyPool, this.calculateDamageEnemy, null, this);
     });
     // dit checkt of er een overlap is met de pickup item en de player
@@ -413,10 +439,10 @@ export default class GameState extends Phaser.State {
           weaponSprite.kill();
           this.pickUpGroup.remove(pickup);
           player.heal(100);
-          healthBar.width = player.health*3;
+          healthBar.width = player.health * 3;
           pickupSound.play();
-          }
         }
+      }
     });
 
   };
@@ -440,11 +466,112 @@ export default class GameState extends Phaser.State {
   logRoomEnemy(enemy, room) {
     enemy.roomId = room.id;
   }
+  
+//checken van de positie van de player tegenover de deur en hoe de deur dan moet draaien
+  checkDoor(player, door) {
+    let newDoor;
+    if (this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
+      if (door.dir === 'horleft') {
+        if (door.closed && player.y > door.y) {
+          newDoor = new Door(this.game, door.x, door.y - door.width, door.height, door.width, 'door');
+          newDoor.up = true;
+          this.addDoor(door,newDoor);
+        }
+        if (door.up && player.x < door.x) {
+          newDoor = new Door(this.game, door.x, door.y + door.height, door.height, door.width, 'door');
+          newDoor.closed = true;
+          this.addDoor(door,newDoor);
+        }
+        if (door.closed && player.y < door.y) {
+          newDoor = new Door(this.game, door.x, door.y + door.height, door.height, door.width, 'door');
+          newDoor.down = true;
+          this.addDoor(door,newDoor);
+        }
+        if (door.down && player.x < door.x) {
+          newDoor = new Door(this.game, door.x, door.y - door.width, door.height, door.width, 'door');
+          newDoor.closed = true;
+          this.addDoor(door,newDoor);
+        }
+      }
+      if (door.dir === 'horright') {
+        if (door.closed && player.y > door.y) {
+          newDoor = new Door(this.game, door.x + door.width - door.height, door.y - door.width, door.height, door.width, 'door');
+          newDoor.up = true;
+          this.addDoor(door,newDoor);
+        }
+        if (door.up && player.x > door.x) {
+          newDoor = new Door(this.game, door.x - (door.height - door.width), door.y + door.height, door.height, door.width, 'door');
+          newDoor.closed = true;
+          this.addDoor(door,newDoor);
+        }
+        if (door.closed && player.y < door.y) {
+          newDoor = new Door(this.game, door.x + (door.width - door.height), door.y + door.height, door.height, door.width, 'door');
+          newDoor.down = true;
+          this.addDoor(door,newDoor);
+        }
+        if (door.down && player.x > door.x) {
+          newDoor = new Door(this.game, door.x - (door.height - door.width), door.y - door.width, door.height, door.width, 'door');
+          newDoor.closed = true;
+          this.addDoor(door,newDoor);
+        }
+      }
+      if (door.dir === 'verttop') {
+        if (door.closed && player.x > door.x) {    
+         newDoor = new Door(this.game, door.x - door.height, door.y, door.height, door.width, 'door');
+          newDoor.toLeft = true;
+          this.addDoor(door,newDoor);
+        }
+        if (door.toLeft && player.y < door.y) {
+          newDoor = new Door(this.game, door.x + door.width, door.y, door.height, door.width, 'door');
+          newDoor.closed = true;
+          this.addDoor(door,newDoor);
+        }
+        if (door.closed && player.x < door.x) {
+          newDoor = new Door(this.game, door.x + door.width, door.y, door.height, door.width, 'door');
+          newDoor.toRight = true;
+          this.addDoor(door,newDoor);
+        }
+        if (door.toRight && player.y < door.y) {
+          newDoor = new Door(this.game, door.x - door.height, door.y, door.height, door.width, 'door');
+          newDoor.closed = true;
+          this.addDoor(door,newDoor);
+        }
+      }
+      if (door.dir === 'vertdown') {
+        if (door.closed && player.x > door.x) {    
+         newDoor = new Door(this.game, door.x - door.height, door.y + (door.height - door.width), door.height, door.width, 'door');
+          newDoor.toLeft = true;
+          this.addDoor(door,newDoor);
+        }
+        if (door.toLeft && player.y > door.y) {
+          newDoor = new Door(this.game, door.x + door.width, door.y - (door.width - door.height), door.height, door.width, 'door');
+          newDoor.closed = true;
+          this.addDoor(door,newDoor);
+        }
+        if (door.closed && player.x < door.x) {
+          newDoor = new Door(this.game, door.x + door.width, door.y + (door.height - door.width), door.height, door.width, 'door');
+          newDoor.toRight = true;
+          this.addDoor(door,newDoor);
+        }
+        if (door.toRight && player.y > door.y) {
+          newDoor = new Door(this.game, door.x - door.height, door.y - (door.width - door.height), door.height, door.width, 'door');
+          newDoor.closed = true;
+          this.addDoor(door,newDoor);
+        }
+      }
+    }
+  }
+  
+  addDoor(door, newDoor) {
+    newDoor.dir = door.dir;
+    this.doorGroup.add(newDoor);
+    this.doorGroup.remove(door);
+  }
 
   overlapHandler() {
     //overlap met een wal of object op de map als player
     console.log('overlap');
-    if(player.rotation <= 0){
+    if (player.rotation <= 0) {
       player.x++;
       player.y++;
     } else if (player.rotation >= 0) {
@@ -486,7 +613,7 @@ export default class GameState extends Phaser.State {
 
   enemyPlayerCollision() {
     player.damage(1);
-    healthBar.width = player.health*3;
+    healthBar.width = player.health * 3;
     player.body.bounce.setTo(1.1);
 
     if (player.health <= 0) {
@@ -543,7 +670,7 @@ export default class GameState extends Phaser.State {
     player.body.velocity.x = 0;
     player.body.velocity.y = 0;
 
-    if (this.cursors.up.isDown || this.game.input.keyboard.isDown(Phaser.Keyboard.Z) || this.game.input.keyboard.isDown(Phaser.Keyboard.W)  ) {
+    if (this.cursors.up.isDown || this.game.input.keyboard.isDown(Phaser.Keyboard.Z) || this.game.input.keyboard.isDown(Phaser.Keyboard.W)) {
       if (distanceToPlayer > 10) {
         this.physics.arcade.moveToPointer(player, player.data.speed);
         player.walk();
@@ -581,8 +708,6 @@ export default class GameState extends Phaser.State {
     }
 
   }
-
-
 
   render() {
     // this.game.debug.spriteInfo(player, 20, 70);
