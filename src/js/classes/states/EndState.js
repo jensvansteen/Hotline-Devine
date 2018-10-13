@@ -8,30 +8,30 @@ export default class EndState extends Phaser.State {
 
   preload() {
     console.log(`preload`);
-    this.load.image('endScreen', 'assets/end-screen.jpg');
-    this.load.image('restart-button', 'assets/GUI/restart-button.png', 433, 122);
+    this.load.image(`endScreen`, `assets/end-screen.jpg`);
+    this.load.image(`restart-button`, `assets/GUI/restart-button.png`, 433, 122);
 
-    points = localStorage.getItem('points');
-    waves = localStorage.getItem('waves');
+    points = localStorage.getItem(`points`);
+    waves = localStorage.getItem(`waves`);
   }
 
   create() {
     this.world.setBounds(0, 0, 1366, 768);
 
-    this.background = this.add.tileSprite(0, 0, this.game.width, this.game.height, 'endScreen');
+    this.background = this.add.tileSprite(0, 0, this.game.width, this.game.height, `endScreen`);
     this.cursors = this.input.keyboard.createCursorKeys();
 
-    const restartButton = new Button(this.game, this.world.centerX, 697, 'restart-button', this.restartTheGame, this);
+    const restartButton = new Button(this.game, this.world.centerX, 697, `restart-button`, this.restartTheGame, this);
     restartButton.onInputOver.add(this.over, this);
     restartButton.onInputOut.add(this.out, this);
     this.add.existing(restartButton);
 
-    title = this.game.add.text(0, this.game.height/4 , `Your score: `, { font: "110px justice", fill: "white", boundsAlignH: "center", boundsAlignV: "middle" });
+    title = this.game.add.text(0, this.game.height / 4, `Your score: `, {font: `110px justice`, fill: `white`, boundsAlignH: `center`, boundsAlignV: `middle`});
     title.setTextBounds(0, 100, this.world.width, 100);
-    title.angle = -5;
-    waveText = this.game.add.text(0, this.game.height/2-150 , `${waves} `, { font: "120px justice", fill: "white", boundsAlignH: "center", boundsAlignV: "middle" });
+    title.angle = - 5;
+    waveText = this.game.add.text(0, this.game.height / 2 - 150, `${waves} `, {font: `120px justice`, fill: `white`, boundsAlignH: `center`, boundsAlignV: `middle`});
     waveText.setTextBounds(0, 100, this.world.width, 100);
-    pointText = this.game.add.text(0, this.game.height/2-50 , `${points} `, { font: "50px justice", fill: "white", boundsAlignH: "center", boundsAlignV: "middle" });
+    pointText = this.game.add.text(0, this.game.height / 2 - 50, `${points} `, {font: `50px justice`, fill: `white`, boundsAlignH: `center`, boundsAlignV: `middle`});
     pointText.setTextBounds(0, 100, this.world.width, 100);
   }
 
@@ -53,7 +53,7 @@ export default class EndState extends Phaser.State {
   }
 
   restartTheGame(button) {
-    console.log('Restart game');
+    console.log(`Restart game`);
     button.inputEnabled = false;
     this.state.start(`Game`);
   }

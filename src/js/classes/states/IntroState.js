@@ -7,20 +7,20 @@ export default class IntroState extends Phaser.State {
 
   preload() {
     console.log(`preload`);
-    this.load.image('startScreen', 'assets/start-screen.jpg');
-    this.load.image('start-button', 'assets/GUI/start-button.png', 433, 122);
-    this.load.audio('soundtrack', 'assets/sounds/its-safe-now.mp3');
+    this.load.image(`startScreen`, `assets/start-screen.jpg`);
+    this.load.image(`start-button`, `assets/GUI/start-button.png`, 433, 122);
+    this.load.audio(`soundtrack`, `assets/sounds/its-safe-now.mp3`);
 
   }
 
   create() {
-    let music = this.add.audio('soundtrack', 0.1,true);
+    const music = this.add.audio(`soundtrack`, 0.1, true);
     music.play();
-    this.background = this.add.tileSprite(0, 0, this.game.width, this.game.height, 'startScreen');
+    this.background = this.add.tileSprite(0, 0, this.game.width, this.game.height, `startScreen`);
     this.cursors = this.input.keyboard.createCursorKeys();
 
 
-    const startButton = new Button(this.game, this.world.centerX, 697, 'start-button', this.startTheGame, this);
+    const startButton = new Button(this.game, this.world.centerX, 697, `start-button`, this.startTheGame, this);
     startButton.onInputOver.add(this.over, this);
     startButton.onInputOut.add(this.out, this);
     this.add.existing(startButton);
@@ -44,7 +44,7 @@ export default class IntroState extends Phaser.State {
   }
 
   startTheGame(button) {
-    console.log('Start game');
+    console.log(`Start game`);
     button.inputEnabled = false;
     this.state.start(`Game`);
   }

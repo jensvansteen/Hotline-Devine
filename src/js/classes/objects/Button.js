@@ -1,6 +1,6 @@
 export default class Button extends Phaser.Button {
-  constructor(game, x, y,button, callback, callbackContext) {
+  constructor(game, x, y, button, callback, callbackContext) {
     super(game, x, y, button, callback, callbackContext);
-      this.anchor.setTo(0.5, 0.5);
+    this.anchor.setTo(0.5, 0.5);
   }
 }
