@@ -4,7 +4,7 @@ This app was made as part of a assignment for our study [Digital Design & Develo
 
 ## Assignment
 
-We had to make an endless game in Phaser framework using Webpack in 5 weeks in teams of two. The game has the requirements to have a scoring system (AJAX & PHP) & leaderboards. We had to work togheter by using Github. 
+We had to make an endless game in Phaser framework using Webpack in 5 weeks in teams of two. The game has the requirements to have a scoring system (AJAX & PHP) & leaderboards. We had to work together by using Github. 
 
 We had a few deadlines on the project. In the first week we had to pitch our idea to the teachers from then we had to give them status update every week on. In the 3rd week we had to switch from projects between teams and work further on the code they wrote, we also had to present our progress we had made for a intermediate evaluation. This is the source code from the first 3 weeks until we had to hand it off to a other team(AJAX & PHP implementation had to happen after switching projects). We were very proud on the result we made and we want to finish the game later in our free time.
 
